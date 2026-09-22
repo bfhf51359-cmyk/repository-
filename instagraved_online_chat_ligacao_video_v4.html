@@ -1,0 +1,2049 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>Instagraved 1.90</title>
+<style>
+:root{--bg:#000;--card:#111;--text:#f5f5f5;--muted:#aaa;--line:#292929;--accent:#fff;--accent2:#bbb;--nav:#050505}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif}
+body.dark{--bg:#0d0d12;--card:#17171f;--text:#f5f5f7;--muted:#a7a7b5;--line:#292934;--nav:#14141b}
+button,input{font:inherit}button{cursor:pointer;border:0}.hidden{display:none!important}
+#app{max-width:520px;margin:auto;min-height:100vh;background:var(--bg)}
+.auth{min-height:100vh;padding:42px 22px;display:flex;flex-direction:column;justify-content:center;align-items:center;background:#000}
+.logo{font-size:42px;font-weight:900;color:white;letter-spacing:-2px}.tag{color:#f7e9ff;margin:8px 0 28px}
+.authbox{width:100%;background:#111;color:#fff;padding:22px;border-radius:24px;box-shadow:0 20px 50px #0004}.authbox h2{margin-top:0}
+.field{width:100%;padding:13px 14px;margin:7px 0;border:1px solid #333;background:#181818;color:#fff;border-radius:12px;outline:none}
+.primary{width:100%;padding:13px;border-radius:12px;color:#000;background:#fff;font-weight:700;margin-top:8px}
+.link{background:none;color:#7c3aed;margin-top:12px;width:100%}.sep{text-align:center;color:#888;margin:14px}
+.top{position:sticky;top:0;z-index:5;background:var(--nav);border-bottom:1px solid var(--line);padding:13px 16px;display:flex;align-items:center;justify-content:space-between}
+.brand{font-weight:900;font-size:24px;background:linear-gradient(90deg,#7c3aed,#ec4899);-webkit-background-clip:text;color:transparent}
+.iconbtn{background:none;color:var(--text);font-size:21px;padding:6px}.screen{padding-bottom:75px}.content{padding:14px}
+.stories{display:flex;gap:13px;overflow:auto;padding:13px 14px;border-bottom:1px solid var(--line);background:var(--card)}
+.story{min-width:62px;text-align:center;font-size:11px}.avatar{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;color:white;font-weight:bold;margin:auto;background:linear-gradient(135deg,#7c3aed,#ec4899);border:3px solid #fff;box-shadow:0 0 0 2px #ec4899}.small{width:42px;height:42px}
+.post{background:var(--card);border-bottom:1px solid var(--line);margin-bottom:10px}.posthead{display:flex;align-items:center;gap:10px;padding:11px}.postimg{height:290px;background:linear-gradient(135deg,#312e81,#be185d);display:grid;place-items:center;color:white;font-size:48px}.postbody{padding:10px}.actions{display:flex;gap:17px;font-size:23px}.caption{margin-top:7px}.muted{color:var(--muted);font-size:13px}
+.bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(520px,100%);background:var(--nav);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:8px 4px;z-index:10}.navbtn{background:none;color:var(--muted);font-size:23px}.navbtn.active{color:#8b5cf6}.navbtn:active,.iconbtn:active,.pill:active,.primary:active{transform:scale(.96)}.pill{cursor:pointer}.iconbtn{min-width:36px;min-height:36px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:15px;margin-bottom:12px}.profileHead{display:flex;gap:15px;align-items:center}.profileAvatar{width:84px;height:84px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#7c3aed,#ec4899);color:#fff;font-size:28px;font-weight:bold}.stats{display:flex;gap:22px;margin-top:12px}.stat b{display:block}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin-top:14px}.grid div{height:110px;background:linear-gradient(135deg,#312e81,#db2777);display:grid;place-items:center;color:#fff;font-size:25px}
+.row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}.row:last-child{border:0}.grow{flex:1}.pill{padding:8px 13px;border-radius:10px;background:#eee;color:#222}.dark .pill{background:#292934;color:#fff}
+.search{width:100%;padding:13px;border-radius:13px;border:1px solid var(--line);background:var(--card);color:var(--text);margin-bottom:12px}
+.toast{position:fixed;left:50%;bottom:80px;transform:translateX(-50%);background:#222;color:#fff;padding:11px 16px;border-radius:12px;z-index:30;display:none}
+.callbox{text-align:center;padding:40px 10px}.callbox video{display:block;margin:10px auto}.callcircle{width:120px;height:120px;border-radius:50%;margin:20px auto;background:linear-gradient(135deg,#7c3aed,#ec4899);display:grid;place-items:center;color:#fff;font-size:45px}
+</style>
+<style>
+.call-screen{position:fixed;inset:0;background:#07111f;color:#fff;z-index:90;display:flex;flex-direction:column;overflow:hidden}.call-screen .call-top{height:72px;display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:rgba(0,0,0,.28);z-index:3}.call-screen .call-title{display:flex;align-items:center;gap:10px}.call-screen .call-avatar{width:42px;height:42px;border-radius:50%;object-fit:cover}.call-screen .remote{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:linear-gradient(145deg,#172554,#0f172a)}.call-screen.voice .remote{display:none}.call-screen.voice{background:linear-gradient(145deg,#172554,#0b1220)}.call-screen .voice-center{margin:auto;text-align:center;z-index:2}.call-screen .voice-avatar{width:130px;height:130px;border-radius:50%;object-fit:cover;border:4px solid rgba(255,255,255,.85);box-shadow:0 12px 40px #0008}.call-screen .voice-name{font-size:24px;font-weight:800;margin-top:16px}.call-screen .call-time{font-size:14px;color:#cbd5e1;margin-top:6px}.call-screen .local{position:absolute;right:16px;top:86px;width:112px;height:156px;object-fit:cover;border-radius:16px;background:#111;border:1px solid #ffffff44;z-index:4;box-shadow:0 8px 30px #0008}.call-screen .controls{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);display:flex;align-items:center;gap:16px;padding:14px 18px;border-radius:28px;background:rgba(15,23,42,.88);backdrop-filter:blur(12px);z-index:5}.call-screen .control{width:54px;height:54px;border:0;border-radius:50%;background:#26344d;color:#fff;font-size:21px;display:grid;place-items:center}.call-screen .control.off{background:#334155}.call-screen .control.end{background:#ef4444}.call-screen .control.videoOn{background:#2563eb}.call-screen .profile-link{font-size:12px;color:#dbeafe;background:#ffffff18;border:1px solid #ffffff22;padding:7px 10px;border-radius:12px}.chat-profile-btn{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:#222;color:#fff;display:grid;place-items:center}
+</style>
+
+
+<style>
+.user-photo,.profile-photo{
+  width:54px;height:54px;border-radius:50%;object-fit:cover;
+  border:3px solid #fff;box-shadow:0 0 0 2px #c83ba8;
+  background:linear-gradient(135deg,#7b35e8,#e52c91);
+}
+.story-photo{
+  width:76px;height:76px;border-radius:50%;object-fit:cover;
+  border:4px solid #d83aa3;box-shadow:0 0 0 2px #fff;
+  background:linear-gradient(135deg,#7b35e8,#e52c91);
+}
+.story-name{max-width:82px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.real-post-image{width:100%;max-height:520px;object-fit:cover;background:#eee;display:block}
+.file-label{
+  display:block;padding:14px;border:1px dashed #bbb;border-radius:14px;
+  margin:8px 0;text-align:center;cursor:pointer;
+}
+.file-label input{display:none}
+.profile-cover{
+  width:100%;height:170px;object-fit:cover;border-radius:18px 18px 0 0;
+  background:linear-gradient(135deg,#7434e8,#e62d91);
+}
+.ig-profile{background:#000;min-height:calc(100vh - 58px);color:#fff}.ig-profile-head{padding:18px 14px 10px}.ig-profile-top{display:flex;gap:18px;align-items:center}.ig-profile-avatar{width:92px;height:92px;border-radius:50%;object-fit:cover;border:2px solid #fff}.ig-profile-stats{display:flex;justify-content:space-around;flex:1;text-align:center}.ig-profile-stats b{display:block;font-size:18px}.ig-profile-stats span{font-size:12px;color:#aaa}.ig-profile-name{font-size:18px;font-weight:800;margin-top:14px}.ig-profile-bio{font-size:13px;color:#ddd;margin:6px 0 14px;white-space:pre-wrap}.ig-profile-actions{display:flex;gap:8px}.ig-profile-actions button{flex:1;padding:10px;border-radius:9px;font-weight:800}.ig-follow{background:#fff;color:#000}.ig-follow.following{background:#242424;color:#fff;border:1px solid #555}.ig-msg{background:#242424;color:#fff;border:1px solid #555}.ig-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:12px}.ig-grid img,.ig-grid video{width:100%;aspect-ratio:1/1;object-fit:cover;background:#111}.notice-dot{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 5px;border-radius:99px;background:#ed3a67;color:#fff;font-size:10px;font-weight:900;margin-left:-5px;vertical-align:top}.notif-item{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}.notif-item:last-child{border-bottom:0}.notif-item img{width:46px;height:46px;border-radius:50%;object-fit:cover}.notif-text{font-size:14px;line-height:1.35}.unread-dot{width:8px;height:8px;border-radius:50%;background:#8b5cf6;margin-left:auto}.chat-actionbar{display:flex;gap:6px;align-items:center}.chat-actionbar .iconbtn{background:#222;border-radius:50%;width:40px;height:40px}.chat-unread{background:#ed3a67;color:#fff;border-radius:99px;padding:3px 7px;font-size:10px;font-weight:800}
+</style>
+
+
+<style>
+.real-post-video{width:100%;max-height:520px;display:block;background:#000}
+.media-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.account-avatar{width:58px;height:58px;border-radius:50%;object-fit:cover;border:3px solid #fff;box-shadow:0 0 0 2px #c83ba8}
+</style>
+<style>
+.live-strip{display:flex;gap:10px;overflow:auto;padding:12px 2px;margin-bottom:8px}
+.live-card{min-width:150px;border-radius:18px;padding:12px;background:linear-gradient(135deg,#24103f,#b5176d);color:#fff;box-shadow:0 6px 18px #0002}
+.live-card img{width:52px;height:52px;border-radius:50%;object-fit:cover;border:3px solid #fff;display:block;margin-bottom:8px}
+.live-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#ff3b30;margin-right:5px}
+.demo-photo{width:100%;max-height:520px;object-fit:cover;display:block;background:#eee}
+.demo-story-badge{font-size:11px;color:#fff;background:#e72b8f;border-radius:999px;padding:3px 7px}
+</style>
+
+<style>
+/* Estúdio de câmera inspirado nas telas de referência */
+.camera-page{position:fixed;inset:0;background:#000;color:#fff;z-index:500;display:flex;flex-direction:column;max-width:520px;margin:auto;touch-action:pan-y}
+.camera-preview{position:relative;flex:1;overflow:hidden;background:#111;border-radius:0 0 28px 28px}
+.camera-preview video{width:100%;height:100%;object-fit:cover;display:block}
+.camera-fallback{position:absolute;inset:0;display:grid;place-items:center;background:linear-gradient(135deg,#24103f,#b5176d);font-size:62px}
+.camera-top{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:18px 18px;z-index:3;text-shadow:0 2px 6px #000}
+.camera-close,.camera-tool{background:#0005;color:#fff;border:0;border-radius:50%;width:44px;height:44px;font-size:27px;display:grid;place-items:center}
+.camera-side{position:absolute;left:18px;bottom:185px;display:flex;flex-direction:column;gap:25px;z-index:3;font-weight:700;text-shadow:0 2px 6px #000}
+.camera-side button{background:none;color:#fff;border:0;text-align:left;font-weight:700;font-size:16px;text-shadow:0 2px 6px #000}
+.camera-audience{position:absolute;left:50%;bottom:172px;transform:translateX(-50%);background:#0008;padding:10px 16px;border-radius:24px;font-weight:700;z-index:3;white-space:nowrap}
+.camera-controls{background:#000;padding:10px 18px 22px;text-align:center}
+.mode-row{display:flex;justify-content:center;gap:22px;align-items:center;font-weight:800;letter-spacing:3px;margin-bottom:15px;font-size:14px}
+.mode{opacity:.45;background:none;color:#fff;border:0;font-weight:800;letter-spacing:2px;padding:8px 0}
+.mode.active{opacity:1}
+.capture-row{display:flex;align-items:center;justify-content:center;gap:25px}
+.capture{width:82px;height:82px;border-radius:50%;border:5px solid #fff;background:#fff;box-shadow:0 0 0 3px #aaa;position:relative}
+.capture.live{background:#fff}.capture.live:after{content:'◉';position:absolute;inset:0;display:grid;place-items:center;font-size:38px;color:#111}
+.gallery-thumb{width:55px;height:55px;border-radius:12px;object-fit:cover;border:2px solid #fff;background:#333}
+.flip{background:none;color:#fff;border:0;font-size:30px}
+.camera-hint{font-size:12px;opacity:.7;margin-top:10px}
+.home-instagram{background:#fff;color:#111}
+.dark .home-instagram{background:var(--bg);color:var(--text)}
+.home-head{height:58px;background:var(--card);display:flex;align-items:center;justify-content:space-between;padding:0 16px;border-bottom:1px solid var(--line)}
+.home-logo{font-size:26px;font-weight:900;letter-spacing:-1.2px;background:linear-gradient(90deg,#7c3aed,#ec4899);-webkit-background-clip:text;color:transparent}
+.home-head-actions{display:flex;gap:7px}.home-head .iconbtn{font-size:26px}
+.story-ring{width:78px;height:78px;border-radius:50%;padding:3px;background:linear-gradient(135deg,#feda75,#d62976,#4f5bd5)}
+.story-ring img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:3px solid var(--card)}
+.story.add .story-ring{background:#eee;padding:3px}.story.add .story-ring img{border:0}.add-badge{position:absolute;right:1px;bottom:1px;width:24px;height:24px;border-radius:50%;background:#111;color:#fff;border:3px solid var(--card);display:grid;place-items:center;font-weight:900}
+.story-wrap{position:relative;width:78px;margin:auto}.story-row{padding:12px 12px 10px;gap:15px}
+.feed-account{display:flex;align-items:center;gap:10px;padding:10px 13px}.feed-account .user-photo{width:40px;height:40px}.feed-more{margin-left:auto;font-size:22px}.post-media{width:100%;aspect-ratio:1/1;object-fit:cover;background:#eee}.post-toolbar{display:flex;align-items:center;padding:8px 12px;gap:5px}.post-toolbar .iconbtn{font-size:27px}.post-toolbar .save{margin-left:auto}.caption{padding:0 12px 12px}.musicline{font-size:12px;color:var(--muted)}
+
+<style>
+.live-card .live-meta{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:13px}
+.live-viewers{display:inline-flex;align-items:center;gap:4px;background:#ffffff20;padding:4px 8px;border-radius:999px}
+.live-red{color:#ff3040;font-weight:900;letter-spacing:.4px}
+.live-badge{display:inline-flex;align-items:center;gap:6px;background:#ff3040;color:#fff;padding:6px 10px;border-radius:999px;font-weight:900;font-size:13px}
+.live-viewer-count{display:inline-flex;align-items:center;gap:5px;background:#ffffff18;border:1px solid #ffffff2b;color:#fff;padding:6px 10px;border-radius:999px;font-weight:700}
+.live-camera-label{position:absolute;top:72px;left:18px;z-index:4;display:flex;gap:8px;align-items:center}
+.live-status-dot{width:9px;height:9px;border-radius:50%;background:#ff3040;box-shadow:0 0 0 4px #ff304033}
+.live-camera-counter{position:absolute;top:72px;right:18px;z-index:4;background:#0009;color:#fff;border-radius:999px;padding:7px 11px;font-weight:700}
+.live-on-screen{position:absolute;left:18px;right:18px;top:118px;z-index:4;display:flex;justify-content:space-between;pointer-events:none}
+.live-enter-note{font-size:12px;color:#aaa;text-align:center;margin-top:8px}
+.live-avatar-stack{display:inline-flex;align-items:center;margin-left:6px;vertical-align:middle}
+.live-avatar-stack img{width:24px;height:24px;border-radius:50%;object-fit:cover;border:2px solid #fff;margin-left:-6px;background:#777}
+.live-avatar-stack img:first-child{margin-left:0}
+.live-card .live-topline{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.live-card .live-people{display:flex;align-items:center;gap:5px;margin-top:5px}
+.live-camera-label{background:#000a;padding:6px 10px;border-radius:999px}
+.live-camera-counter{border:1px solid #fff3}
+</style>
+</style>
+</head>
+<body>
+<div id="app"></div><div id="toast" class="toast"></div><div style="position:fixed;right:8px;bottom:8px;z-index:9999;background:#111;color:#aaa;border:1px solid #333;border-radius:999px;padding:5px 9px;font-size:10px">Instagraved 1.90</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// ================= INSTAGRAVED =================
+// Esta versão funciona sem Supabase para TESTE local.
+// Quando você tiver a URL/chave pública, elas podem ser colocadas aqui
+// para ativar o backend online.
+const SUPABASE_URL = "https://cbkmpatebvjxfkkjgfvi.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_pkL1duDxWXs2zZ3lSt97SA_RaW7dCJX";
+
+const onlineReady =
+  typeof window.supabase !== "undefined" &&
+  SUPABASE_URL.startsWith("https://") &&
+  !SUPABASE_URL.includes("COLE_AQUI") &&
+  SUPABASE_ANON_KEY &&
+  !SUPABASE_ANON_KEY.includes("COLE_AQUI");
+
+const sb = onlineReady
+  ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+  : null;
+
+// Chaves locais — corrigidas para não depender do Supabase para criar conta.
+const ACCOUNTS_KEY = "instagraved_accounts_v2";
+const CURRENT_KEY = "instagraved_current_v2";
+const MESSAGES_KEY = "instagraved_messages_v2";
+
+let accounts = loadJSON(ACCOUNTS_KEY, []);
+let localMessages = loadJSON(MESSAGES_KEY, []);
+let account = null;
+let current = "home";
+let activeChat = "";
+let activePeerId = "";
+let messageChannel = null;
+let userChannel = null;
+let presenceChannel = null;
+let onlineUsers = new Map();
+let callChannel = null;
+let pc = null;
+let localStream = null;
+let pendingCall = null;
+let openingCall = false;
+let presenceReady = false;
+let unreadCount = 0;
+let mediaRecorder = null;
+let mediaChunks = [];
+let recordingAudio = false;
+
+const demoUsers = [
+  ["Ana Clara","anaclara"],["Lucas Silva","lucassilva"],["Beatriz Lima","beatrizlima"],
+  ["João Pedro","joaopedro"],["Malu Costa","malucosta"],["Rafael Alves","rafaelalves"],
+  ["Sofia Martins","sofiamartins"],["Miguel Rocha","miguelrocha"]
+];
+
+const demoColors = [
+  ["#5b21b6","#ec4899"],["#0f766e","#22c55e"],["#be123c","#fb7185"],["#1d4ed8","#38bdf8"],
+  ["#a16207","#f59e0b"],["#6d28d9","#8b5cf6"],["#0e7490","#06b6d4"],["#9f1239","#f43f5e"]
+];
+
+function makeDemoPhoto(name,index=0){
+  const c=demoColors[index%demoColors.length];
+  const ini=initials(name).slice(0,2);
+  const hair=index%2===0 ? "#2b1b17" : "#111827";
+  const skin=["#f5c7a9","#d99b72","#8d5524","#c68642"][index%4];
+  const shirt=["#ffffff","#111827","#fef3c7","#dbeafe"][index%4];
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800">
+    <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${c[0]}"/><stop offset="1" stop-color="${c[1]}"/></linearGradient></defs>
+    <rect width="800" height="800" fill="url(#bg)"/>
+    <circle cx="400" cy="310" r="145" fill="${skin}"/>
+    <path d="M250 300 Q400 90 550 300 Q530 175 400 160 Q270 175 250 300" fill="${hair}"/>
+    <circle cx="350" cy="315" r="13" fill="#222"/><circle cx="450" cy="315" r="13" fill="#222"/>
+    <path d="M350 390 Q400 425 450 390" fill="none" stroke="#7a3d2c" stroke-width="12" stroke-linecap="round"/>
+    <path d="M170 800 Q185 560 400 550 Q615 560 630 800" fill="${shirt}"/>
+    <text x="400" y="710" text-anchor="middle" font-family="Arial" font-size="72" font-weight="700" fill="${c[0]}">${ini}</text>
+  </svg>`;
+  return "data:image/svg+xml;charset=UTF-8,"+encodeURIComponent(svg);
+}
+
+function makeDemoPost(name,index=0){
+  const c=demoColors[index%demoColors.length];
+  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="900" height="700"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${c[0]}"/><stop offset="1" stop-color="${c[1]}"/></linearGradient></defs><rect width="900" height="700" fill="url(#g)"/><circle cx="700" cy="150" r="95" fill="#fff" opacity=".18"/><circle cx="180" cy="560" r="160" fill="#fff" opacity=".12"/><text x="450" y="330" text-anchor="middle" font-family="Arial" font-size="74" font-weight="700" fill="#fff">${initials(name)}</text><text x="450" y="410" text-anchor="middle" font-family="Arial" font-size="28" fill="#fff">momento no Instagraved</text></svg>`;
+  return "data:image/svg+xml;charset=UTF-8,"+encodeURIComponent(svg);
+}
+
+function seedCommunity(){
+  let changed=false;
+  const existingNames=new Set(accounts.map(a=>String(a.name||"").toLowerCase()));
+  demoUsers.forEach(([name,username],i)=>{
+    let a=accounts.find(x=>String(x.username||"").toLowerCase()===username);
+    if(!a){
+      a={id:"local_demo_"+username,name,username,email:username+"@instagraved.local",password:"demo123",avatar:makeDemoPhoto(name,i),bio:"Perfil da comunidade Instagraved.",followers:20+i*7,following:5+i,posts:[],createdAt:new Date().toISOString()};
+      accounts.push(a); changed=true;
+    }
+    if(!a.avatar){a.avatar=makeDemoPhoto(name,i);changed=true;}
+    if(!Array.isArray(a.posts)||!a.posts.length){
+      a.posts=[{id:"demo_post_"+username,text:["Um dia incrível!","Olha esse momento!","Compartilhando novidades!","Que legal estar aqui!","Meu primeiro momento!","Dia especial!","Curtindo o Instagraved!","Olá, pessoal!"][i],media:makeDemoPost(name,i),type:"image",createdAt:new Date().toISOString()}];
+      changed=true;
+    }
+    if(!a.story || a.story.expiresAt<Date.now()){
+      a.story={media:makeDemoPost(name,(i+2)%demoColors.length),type:"image",createdAt:Date.now(),expiresAt:Date.now()+24*60*60*1000};
+      changed=true;
+    }
+    if(i%3===0 && !a.live){a.live=true;a.liveStartedAt=Date.now()-i*60000;a.liveViewers=0;a.liveViewerIds=[];changed=true;}
+    if(a.live && !Array.isArray(a.liveViewerIds)) { a.liveViewerIds=[]; changed=true; }
+  });
+  // Corrige perfis antigos sem foto e evita que contas de teste apareçam todas como Gabriel.
+  accounts.forEach((a,i)=>{
+    if(!a.avatar){a.avatar=makeAvatar(a.name);changed=true;}
+    if(!Array.isArray(a.posts)){a.posts=[];changed=true;}
+  });
+  if(changed) saveAccounts();
+}
+
+
+function loadJSON(key, fallback) {
+  try {
+    const value = localStorage.getItem(key);
+    return value ? JSON.parse(value) : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function saveAccounts() {
+  localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(accounts));
+  localStorage.setItem(CURRENT_KEY, account ? account.id : "");
+}
+
+function saveMessages() {
+  localStorage.setItem(MESSAGES_KEY, JSON.stringify(localMessages));
+}
+
+function toast(t) {
+  const x = document.getElementById("toast");
+  if (!x) return;
+  x.textContent = t;
+  x.style.display = "block";
+  clearTimeout(window.__toast);
+  window.__toast = setTimeout(() => x.style.display = "none", 2200);
+}
+
+function initials(n) {
+  return (n || "?").split(/\s+/).map(x => x[0]).slice(0,2).join("").toUpperCase();
+}
+
+function escapeHtml(x) {
+  return String(x ?? "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+  }[c]));
+}
+
+function getLocalCurrent() {
+  const id = localStorage.getItem(CURRENT_KEY);
+  return accounts.find(a => a.id === id) || null;
+}
+
+function findLocalPeer(name) {
+  const q = String(name).replace("@","").trim().toLowerCase();
+  return accounts.find(a =>
+    a.username.toLowerCase() === q || a.name.toLowerCase() === q
+  ) || null;
+}
+
+async function findPeer(name) {
+  const local = findLocalPeer(name);
+  if (local) return local;
+
+  const online = onlineUsers.get(normalizeUsername(name));
+  if (online && online.id) {
+    return {id:online.id,name:online.name||online.username,username:online.username,avatar:online.avatar||makeAvatar(online.name||online.username)};
+  }
+
+  if (!sb || !account) return null;
+  const safe = String(name).replace(/,/g, "").trim();
+  const { data, error } = await sb
+    .from("profiles")
+    .select("id,name,username")
+    .or(`name.eq.${safe},username.eq.${safe.toLowerCase()}`)
+    .limit(1);
+
+  if (error) return null;
+  return data?.[0] || null;
+}
+
+function auth() {
+  document.getElementById("app").innerHTML = `
+  <div class="auth">
+    <div class="logo">Instagraved</div>
+    <div class="tag">Conecte-se. Compartilhe. Converse.</div>
+    <div class="authbox" id="authbox">
+      <h2>Entrar</h2>
+      <input id="loginUser" class="field" placeholder="Seu nome" autocomplete="username">
+      <input id="loginPass" class="field" type="password" placeholder="Senha" autocomplete="current-password">
+      <button class="primary" onclick="login()">Entrar</button>
+      <button class="link" onclick="signupBox()">Criar uma conta</button>
+      <p class="muted" style="margin-top:14px">
+        Entre com seu nome e sua senha.
+      </p>
+    </div>
+  </div>`;
+}
+
+function makeAvatar(name) {
+  const initialsText = initials(name || "U").slice(0,2).toUpperCase();
+  const safe = initialsText.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160">
+    <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7b35e8"/><stop offset="1" stop-color="#e52c91"/>
+    </linearGradient></defs>
+    <rect width="160" height="160" rx="80" fill="url(#g)"/>
+    <text x="80" y="92" text-anchor="middle" dominant-baseline="middle"
+      font-family="Arial,sans-serif" font-size="56" font-weight="700" fill="white">${safe}</text>
+  </svg>`;
+  return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
+}
+
+function ensureAccountAvatars() {
+  let changed = false;
+  accounts.forEach(a => {
+    if (!a.avatar) { a.avatar = makeAvatar(a.name); changed = true; }
+    if (!Array.isArray(a.posts)) { a.posts = []; changed = true; }
+    if (!Array.isArray(a.followersIds)) { a.followersIds = []; changed = true; }
+    if (!Array.isArray(a.followingIds)) { a.followingIds = []; changed = true; }
+    if (!Array.isArray(a.notifications)) { a.notifications = []; changed = true; }
+    a.followers = a.followersIds.length || Number(a.followers || 0);
+    a.following = a.followingIds.length || Number(a.following || 0);
+  });
+  if (account && !account.avatar) {
+    account.avatar = makeAvatar(account.name);
+    changed = true;
+  }
+  if (changed) saveAccounts();
+}
+
+function signupBox() {
+  document.getElementById("authbox").innerHTML = `
+    <h2>Criar conta</h2>
+    <input id="suName" class="field" placeholder="Seu nome" autocomplete="name">
+    <input id="suPass" class="field" type="password" placeholder="Crie uma senha" autocomplete="new-password">
+    <button class="primary" onclick="signupSimple()">Criar conta</button>
+    <button class="link" onclick="auth()">Voltar para entrar</button>
+  `;
+}
+
+function signupSimple() {
+  const name = document.getElementById("suName")?.value.trim();
+  const password = document.getElementById("suPass")?.value || "";
+
+  if (!name) return toast("Digite seu nome.");
+  if (password.length < 4) return toast("A senha precisa ter pelo menos 4 caracteres.");
+
+  if (accounts.some(a => a.name.toLowerCase() === name.toLowerCase())) {
+    return toast("Esse nome já está cadastrado.");
+  }
+
+  const username = name.toLowerCase()
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "")
+    .slice(0,24) || ("usuario" + Date.now());
+
+  account = {
+    id: "local_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2,8),
+    name,
+    username,
+    email: "",
+    password,
+    avatar: makeAvatar(name),
+    bio: "",
+    followers: 0,
+    following: 0,
+    followersIds: [],
+    followingIds: [],
+    notifications: [],
+    posts: [],
+    story: null,
+    createdAt: new Date().toISOString()
+  };
+
+  accounts.push(account);
+  saveAccounts();
+  toast("Conta criada! Entrando...");
+  setTimeout(() => enter(), 250);
+}
+
+function ownerLoginBox() {
+  document.getElementById("authbox").innerHTML = `
+    <h2>Área do dono</h2>
+    <p class="muted">Somente o dono usa esta área para criar contas para outras pessoas.</p>
+    <input id="ownerUser" class="field" placeholder="Usuário do dono" value="dono">
+    <input id="ownerPass" class="field" type="password" placeholder="Senha do dono" value="Instagraved123">
+    <button class="primary" onclick="ownerLogin()">Entrar como dono</button>
+    <button class="link" onclick="auth()">Voltar</button>
+  `;
+}
+
+function ownerLogin() {
+  const u = document.getElementById("ownerUser")?.value.trim();
+  const p = document.getElementById("ownerPass")?.value || "";
+
+  // Credenciais iniciais fixas para o protótipo.
+  // Assim o acesso não depende de uma configuração anterior salva no navegador.
+  const DEFAULT_OWNER_USER = "dono";
+  const DEFAULT_OWNER_PASS = "Instagraved123";
+
+  // Aceita também a credencial que já tiver sido configurada anteriormente.
+  const savedOwner = loadJSON("instagraved_owner_v1", null);
+  const okDefault =
+    u.toLowerCase() === DEFAULT_OWNER_USER &&
+    p === DEFAULT_OWNER_PASS;
+
+  const okSaved = savedOwner &&
+    u.toLowerCase() === String(savedOwner.username).toLowerCase() &&
+    p === savedOwner.password;
+
+  if (!okDefault && !okSaved) {
+    return toast("Usuário ou senha do dono incorretos. Use dono / Instagraved123.");
+  }
+
+  // Padroniza o acesso para evitar o erro de credencial antiga.
+  localStorage.setItem("instagraved_owner_v1", JSON.stringify({
+    username: DEFAULT_OWNER_USER,
+    password: DEFAULT_OWNER_PASS
+  }));
+
+  ownerPanel();
+}
+
+function ownerPanel() {
+  const owner = loadJSON("instagraved_owner_v1", null);
+  const list = accounts.map(a => `
+    <div class="panel row">
+      <img class="account-avatar" src="${a.avatar || makeAvatar(a.name)}" alt="">
+      <div class="grow">
+        <b>${escapeHtml(a.name)}</b>
+        <div class="muted">Entrar com nome + senha</div>
+      </div>
+      <button class="pill" onclick="showCredentials('${escapeHtml(a.id)}')">Dados</button>
+      <button class="pill" onclick="toggleBan('${escapeHtml(a.id)}')">${a.banned ? "Desbanir" : "Banir"}</button>
+      <button class="pill" onclick="deleteManagedAccount('${escapeHtml(a.id)}')">Excluir</button>
+    </div>`).join("");
+
+  document.getElementById("app").innerHTML = `
+    <div class="auth">
+      <div class="logo">Instagraved</div>
+      <div class="tag">Painel do dono</div>
+      <div class="authbox">
+        <h2>Criar conta para uma pessoa</h2>
+        <input id="suName" class="field" placeholder="Nome da pessoa">
+        <input id="suPass" class="field" type="password" placeholder="Senha da pessoa">
+        <button class="primary" onclick="signupManaged()">Criar acesso</button>
+
+        <h3 style="margin-top:24px">Contas criadas</h3>
+        <div>${list || '<p class="muted">Nenhuma conta criada ainda.</p>'}</div>
+
+        <button class="link" onclick="auth()">Voltar para entrar</button>
+      </div>
+    </div>`;
+}
+
+function signupManaged() {
+  const name = document.getElementById("suName")?.value.trim();
+  const password = document.getElementById("suPass")?.value || "";
+
+  if (!name || password.length < 4)
+    return toast("Digite o nome e uma senha com pelo menos 4 caracteres.");
+
+  if (accounts.some(a => a.name.toLowerCase() === name.toLowerCase()))
+    return toast("Já existe uma conta com esse nome.");
+
+  const username = name.toLowerCase()
+    .normalize("NFD").replace(/[\\u0300-\\u036f]/g,"")
+    .replace(/[^a-z0-9]+/g,"")
+    .slice(0,24) || ("usuario" + Date.now());
+
+  accounts.push({
+    id: "local_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2,8),
+    name,
+    username,
+    email: "",
+    password,
+    avatar:makeAvatar(name),
+    bio:"",
+    followers:0,
+    following:0,
+    followersIds:[],
+    followingIds:[],
+    notifications:[],
+    posts:[],
+    createdAt:new Date().toISOString(),
+    managedByOwner:true
+  });
+  saveAccounts();
+  toast("Conta criada! A pessoa entra usando nome e senha.");
+  ownerPanel();
+}
+
+function showCredentials(id) {
+  const a = accounts.find(x => x.id === id);
+  if (!a) return;
+  alert(
+    "ACESSO DO INSTAGRAVED\n\n" +
+    "Nome: " + a.name + "\n" +
+    "Senha: " + a.password
+  );
+}
+
+
+function showBanned(a) {
+  document.getElementById("app").innerHTML = `
+    <div class="auth">
+      <div class="logo">Instagraved</div>
+      <div class="tag">Conta bloqueada</div>
+      <div class="authbox">
+        <h2>Esta conta foi banida</h2>
+        <p class="muted">O acesso desta conta está bloqueado pela moderação.</p>
+        <button class="primary" onclick="showHelp()">Central de ajuda</button>
+        <button class="link" onclick="auth()">Voltar</button>
+      </div>
+    </div>`;
+}
+
+function toggleBan(id) {
+  const a = accounts.find(x => x.id === id);
+  if (!a) return;
+  a.banned = !a.banned;
+  a.banReason = a.banned ? "Conta bloqueada pela moderação." : "";
+  const i = accounts.findIndex(x => x.id === id);
+  accounts[i] = a;
+  saveAccounts();
+  toast(a.banned ? "Conta banida." : "Conta desbanida.");
+  ownerPanel();
+}
+
+function showHelp() {
+  document.getElementById("app").innerHTML = `
+    <div class="auth">
+      <div class="logo">Instagraved</div>
+      <div class="tag">Central de ajuda</div>
+      <div class="authbox">
+        <h2>Ajuda</h2>
+        <div class="panel">
+          <b>Conta bloqueada?</b>
+          <p class="muted">Peça ao dono/moderação para revisar o bloqueio.</p>
+        </div>
+        <div class="panel">
+          <b>Nome ou foto?</b>
+          <p class="muted">Abra seu perfil e toque em "Editar perfil" para trocar nome, bio e foto.</p>
+        </div>
+        <button class="link" onclick="auth()">Voltar para entrar</button>
+      </div>
+    </div>`;
+}
+
+function deleteManagedAccount(id) {
+  if (!confirm("Excluir esta conta?")) return;
+  accounts = accounts.filter(a => a.id !== id);
+  saveAccounts();
+  ownerPanel();
+}
+
+async function signup() {
+  const name = document.getElementById("suName")?.value.trim();
+  const username = document.getElementById("suUser")?.value.trim().replace(/^@/,"").toLowerCase();
+  const email = document.getElementById("suEmail")?.value.trim().toLowerCase();
+  const password = document.getElementById("suPass")?.value || "";
+
+  if (!name || !username || !email || password.length < 6) {
+    return toast("Preencha tudo e use uma senha de 6 ou mais caracteres.");
+  }
+
+  if (!/^[a-z0-9_.-]{3,30}$/.test(username)) {
+    return toast("Usuário: use 3–30 caracteres, letras, números, _ . ou -.");
+  }
+
+  if (!email.includes("@")) {
+    return toast("Digite um e-mail válido.");
+  }
+
+  if (accounts.some(a => a.username.toLowerCase() === username)) {
+    return toast("Esse nome de usuário já está cadastrado.");
+  }
+
+  if (accounts.some(a => a.email.toLowerCase() === email)) {
+    return toast("Esse e-mail já está cadastrado.");
+  }
+
+  // Conta local: funciona mesmo sem Supabase.
+  account = {
+    id: "local_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2,8),
+    name,
+    username,
+    email,
+    password,
+    avatar: "",
+    bio: "",
+    followers: 0,
+    following: 0,
+    followersIds: [],
+    followingIds: [],
+    notifications: [],
+    posts: [],
+    createdAt: new Date().toISOString()
+  };
+
+  accounts.push(account);
+  saveAccounts();
+  toast("Conta criada com sucesso!");
+  setTimeout(() => enter(), 250);
+}
+
+async function login() {
+  const user = document.getElementById("loginUser")?.value.trim();
+  const password = document.getElementById("loginPass")?.value || "";
+
+  if (!user || !password) return toast("Digite seu nome e sua senha.");
+
+  const normalizedUser = user.replace(/^@/, "").toLowerCase();
+  const found = accounts.find(a =>
+    (a.name.toLowerCase() === normalizedUser ||
+     String(a.username || "").toLowerCase() === normalizedUser) &&
+    a.password === password
+  );
+
+  if (!found) {
+    return toast("Conta ou senha incorreta.");
+  }
+
+  account = found;
+  setUnread((account.notifications||[]).filter(n=>!n.read).length);
+  saveAccounts();
+  toast("Entrando...");
+  setTimeout(() => enter(), 200);
+}
+
+function enter() {
+  setUnread((account?.notifications||[]).filter(n=>!n.read).length);
+  render();
+  if (sb) subscribeOnlinePresence();
+}
+
+async function logout() {
+  await endCall(false);
+  if (messageChannel && sb) {
+    try { await sb.removeChannel(messageChannel); } catch {}
+  }
+  if (userChannel && sb) {
+    try { await sb.removeChannel(userChannel); } catch {}
+  }
+  if (presenceChannel && sb) {
+    try { await sb.untrack(); } catch {}
+    try { await sb.removeChannel(presenceChannel); } catch {}
+  }
+  presenceChannel = null;
+  presenceReady = false;
+  onlineUsers = new Map();
+  messageChannel = null;
+  userChannel = null;
+  account = null;
+  activeChat = "";
+  activePeerId = "";
+  localStorage.removeItem(CURRENT_KEY);
+  auth();
+}
+
+function go(x) {
+  current = x;
+  render();
+}
+
+function nav() {
+  return `<nav class="bottom">
+    ${[
+      ["home","⌂"],["search","⌕"],["camera","＋"],["messages","✈"],["profile","◉"]
+    ].map(x => `
+      <button class="navbtn ${current===x[0]?"active":""}" onclick="${x[0]==='camera'?'openCamera()':`go('${x[0]}')`}">${x[1]}</button>
+    `).join("")}
+  </nav>`;
+}
+
+function normalizeUsername(v){ return String(v||"").replace(/^@/,'').trim().toLowerCase(); }
+function getUnread(){ return Number(localStorage.getItem('instagraved_unread_v1')||0); }
+function setUnread(n){ unreadCount=Math.max(0,Number(n)||0); localStorage.setItem('instagraved_unread_v1',String(unreadCount)); }
+function pushNotification(n){
+  if(!account) return;
+  if(!Array.isArray(account.notifications)) account.notifications=[];
+  account.notifications.unshift({id:'n_'+Date.now()+'_'+Math.random().toString(36).slice(2,6),createdAt:new Date().toISOString(),...n});
+  account.notifications=account.notifications.slice(0,100);
+  updateAccount();
+  setUnread(getUnread()+1);
+}
+function markNotificationsRead(){ setUnread(0); if(account){ account.notifications=(account.notifications||[]).map(n=>({...n,read:true})); updateAccount(); } }
+function isFollowing(id){ return !!account && Array.isArray(account.followingIds) && account.followingIds.includes(id); }
+function findAccount(id){ return accounts.find(a=>a.id===id) || null; }
+function followLocal(id){
+  if(!account || id===account.id) return;
+  const target=findAccount(id); if(!target) return toast('Pessoa não encontrada.');
+  if(!Array.isArray(account.followingIds)) account.followingIds=[];
+  if(account.followingIds.includes(id)){
+    account.followingIds=account.followingIds.filter(x=>x!==id);
+    target.followersIds=(target.followersIds||[]).filter(x=>x!==account.id);
+    account.following=account.followingIds.length; target.followers=target.followersIds.length || Number(target.followers||0);
+    updateAccount(); saveAccounts();
+    const ti=accounts.findIndex(a=>a.id===target.id); if(ti>=0) accounts[ti]=target; saveAccounts();
+    toast('Você deixou de seguir @'+target.username);
+    return false;
+  }
+  account.followingIds.push(id); target.followersIds=Array.isArray(target.followersIds)?target.followersIds:[];
+  if(!target.followersIds.includes(account.id)) target.followersIds.push(account.id);
+  account.following=account.followingIds.length; target.followers=target.followersIds.length;
+  updateAccount(); const ti=accounts.findIndex(a=>a.id===target.id); if(ti>=0) accounts[ti]=target; saveAccounts();
+  pushNotification({type:'system',text:'Você seguiu @'+target.username,fromId:target.id,fromName:target.name});
+  if(target.id!==account.id){
+    const wasFollowingBack=(target.followingIds||[]).includes(account.id);
+    addFollowNoticeToTarget(target, wasFollowingBack ? 'follow_back' : 'follow');
+  }
+  toast('Seguindo @'+target.username);
+  return true;
+}
+function addFollowNoticeToTarget(target, kind){
+  if(!target) return;
+  const back = kind==='follow_back';
+  const text = back ? '@'+account.username+' te seguiu de volta' : '@'+account.username+' te seguiu';
+  if(!Array.isArray(target.notifications)) target.notifications=[];
+  target.notifications.unshift({id:'n_'+Date.now()+'_'+Math.random().toString(36).slice(2,6),type:kind,text,fromId:account.id,fromName:account.name,fromUsername:account.username,createdAt:new Date().toISOString(),read:false});
+  target.notifications=target.notifications.slice(0,100);
+  const idx=accounts.findIndex(a=>a.id===target.id); if(idx>=0) accounts[idx]=target;
+  saveAccounts();
+  setUnreadForAccount(target.id);
+}
+function setUnreadForAccount(id){
+  // Local accounts share the device; the notification itself is persisted on the target account.
+  if(id===account?.id) setUnread(getUnread()+1);
+}
+async function followUser(idOrUsername){
+  const id=String(idOrUsername);
+  const local=findAccount(id) || accounts.find(a=>normalizeUsername(a.username)===normalizeUsername(id));
+  if(local) return followLocal(local.id);
+  const u=onlineUsers.get(normalizeUsername(id));
+  if(!u) return toast('Pessoa não encontrada ou offline.');
+  const following=!!(account.remoteFollowing||[]).includes(normalizeUsername(u.username));
+  account.remoteFollowing=Array.isArray(account.remoteFollowing)?account.remoteFollowing:[];
+  if(following) account.remoteFollowing=account.remoteFollowing.filter(x=>x!==normalizeUsername(u.username));
+  else account.remoteFollowing.push(normalizeUsername(u.username));
+  saveAccounts();
+  if(!following){
+    const isBack=Array.isArray(account.remoteFollowers) && account.remoteFollowers.includes(normalizeUsername(u.username));
+    await presenceChannel?.send({type:'broadcast',event:'follow-notification',payload:{to:normalizeUsername(u.username),fromId:account.id,fromName:account.name,fromUsername:normalizeUsername(account.username),kind:isBack?'follow_back':'follow',text:isBack?'@'+normalizeUsername(account.username)+' te seguiu de volta':'@'+normalizeUsername(account.username)+' te seguiu'}});
+    toast(isBack?'Seguindo de volta @'+u.username:'Seguindo @'+u.username);
+  } else toast('Você deixou de seguir @'+u.username);
+  return !following;
+}
+function receiveOnlineMessage(payload){
+  if(!payload||!account)return;
+  const me=normalizeUsername(account.username); if(normalizeUsername(payload.to)!==me)return;
+  const from=normalizeUsername(payload.from);
+  const msg={id:payload.id||('online_'+Date.now()+'_'+Math.random().toString(36).slice(2,7)),sender_id:'online:'+from,receiver_id:'online:'+me,text:String(payload.text||''),created_at:payload.created_at||new Date().toISOString()};
+  if(payload.kind==='media'){msg.media_type=payload.media_type;msg.mediaData=payload.mediaData;msg.media_name=payload.media_name||'';}
+  if(localMessages.some(m=>m.id===msg.id))return;
+  localMessages.push(msg);saveMessages();
+  const activePeer='online:'+from;
+  if(document.getElementById('chatList')&&activePeerId===activePeer)appendMessage(msg);
+  else {
+    const label=payload.media_type==='image'?'📷 enviou uma foto':payload.media_type==='video'?'🎥 enviou um vídeo':payload.media_type==='audio'?'🎙️ enviou um áudio':'enviou uma mensagem: '+String(payload.text||'').slice(0,80);
+    pushNotification({type:'message',text:'@'+from+' '+label,fromId:payload.fromId,fromName:payload.fromName||payload.from||from,fromUsername:from,messageId:msg.id});
+    toast('💬 Nova mensagem de @'+from);
+  }
+}
+
+function render() {
+  if (!account) return auth();
+
+  let body = "";
+  if (current==="home") body = home();
+  else if (current==="search") body = search();
+  else if (current==="create") body = create();
+  else if (current==="messages") body = messages();
+  else if (current==="profile") body = profile();
+  else if (current==="settings") body = settings();
+  else if (current==="calls") body = calls();
+  else if (current==="notifications") body = notifications();
+
+  document.getElementById("app").innerHTML = `
+    <div class="top">
+      <div class="brand">Instagraved</div>
+      <div>
+        <button class="iconbtn" onclick="go('notifications')">♡${getUnread()>0?`<span class="notice-dot">${Math.min(getUnread(),99)}</span>`:''}</button>
+        <button class="iconbtn" onclick="go('messages')">✉</button>
+      </div>
+    </div>
+    <main class="screen">${body}</main>
+    ${nav()}
+  `;
+}
+
+function home() {
+  const people = accounts.filter(a => a.id !== account.id && !a.banned);
+  const stories = people.filter(a => a.story && a.story.expiresAt > Date.now());
+  const livePeople = people.filter(a => a.live);
+  const storyPeople = people.filter(a => a.story && a.story.expiresAt > Date.now());
+  return `
+    <div class="home-instagram">
+      <div class="home-head">
+        <div class="home-logo">Instagraved</div>
+        <div class="home-head-actions">
+          <button class="iconbtn" onclick="go('notifications')">♡${getUnread()>0?`<span class="notice-dot">${Math.min(getUnread(),99)}</span>`:''}</button>
+          <button class="iconbtn" onclick="go('messages')">✈</button>
+        </div>
+      </div>
+      <div class="stories story-row">
+        <div class="story add" onclick="openCamera('story')">
+          <div class="story-wrap"><div class="story-ring"><img src="${account.avatar || makeAvatar(account.name)}"></div><div class="add-badge">+</div></div>
+          <div class="story-name">Seu story</div>
+        </div>
+        ${storyPeople.map(a => `
+          <div class="story" onclick="viewStory('${a.id}')">
+            <div class="story-ring"><img src="${a.avatar || makeAvatar(a.name)}"></div>
+            <div class="story-name">${escapeHtml(a.name)}</div>
+          </div>`).join('')}
+        ${people.filter(a=>!storyPeople.includes(a)).map(a => `
+          <div class="story" onclick="viewProfile('${a.id}')">
+            <div class="story-ring"><img src="${a.avatar || makeAvatar(a.name)}"></div>
+            <div class="story-name">${escapeHtml(a.name)}</div>
+          </div>`).join('')}
+      </div>
+      ${livePeople.length ? `<div class="live-strip">${livePeople.map(a=>{a.liveViewers=Number(a.liveViewers||0); const ids=Array.isArray(a.liveViewerIds)?a.liveViewerIds:[]; const avs=ids.map(id=>accounts.find(x=>x.id===id)).filter(Boolean).slice(0,3); return `<div class="live-card" onclick="watchLive('${a.id}')"><div class="live-topline"><span class="live-dot"></span><b class="live-red">AO VIVO</b><span class="live-viewers">👥 ${a.liveViewers}</span>${avs.length?`<span class="live-avatar-stack">${avs.map(v=>`<img src="${v.avatar || makeAvatar(v.name)}" title="${escapeHtml(v.name)}">`).join('')}</span>`:''}</div><div class="live-people"><img class="user-photo" style="width:38px;height:38px" src="${a.avatar || makeAvatar(a.name)}"><div><b>${escapeHtml(a.name)}</b><div class="muted">Toque para assistir</div></div></div></div>`}).join('')}</div>` : ''}
+      ${dynamicPost(account)}
+      ${people.map(a=>dynamicPost(a)).join('')}
+    </div>`;
+}
+
+function dynamicPost(a) {
+  const p = a.posts && a.posts.length ? a.posts[a.posts.length - 1] : null;
+  const media = p?.type === 'video' && p?.media
+    ? `<video class="post-media" src="${p.media}" controls playsinline preload="metadata"></video>`
+    : p?.media ? `<img class="post-media" src="${p.media}" alt="Post de ${escapeHtml(a.name)}">` : `<div class="postimg post-media">📷</div>`;
+  return `<article class="post">
+    <div class="feed-account" onclick="viewProfile('${a.id}')" style="cursor:pointer">
+      <img class="user-photo" src="${a.avatar || makeAvatar(a.name)}" alt="">
+      <div><b>${escapeHtml(a.name)}</b><div class="musicline">@${escapeHtml(a.username || a.name)} ${a.live ? '· 🔴 AO VIVO' : ''}</div></div>
+      <button class="iconbtn feed-more" onclick="event.stopPropagation();report('${escapeHtml(a.name)}')">•••</button>
+    </div>
+    ${media}
+    <div class="post-toolbar">
+      <button class="iconbtn" onclick="like(this)">♡</button>
+      <button class="iconbtn" onclick="toast('Comentários abertos')">◯</button>
+      <button class="iconbtn" onclick="toast('Compartilhado')">➤</button>
+      <button class="iconbtn save" onclick="toast('Salvo')">⌑</button>
+    </div>
+    <div class="caption"><b>${escapeHtml(a.name)}</b> ${escapeHtml(p?.text || 'Compartilhou um momento no Instagraved.')}</div>
+  </article>`;
+}
+
+function post(name,emoji,cap,time) {
+  return `<article class="post">
+    <div class="posthead">
+      <div class="avatar small">${initials(name)}</div>
+      <div class="grow"><b>@${name.toLowerCase()}</b><div class="muted">${time} · Online</div></div>
+      <button class="iconbtn" onclick="report('${name}')">•••</button>
+    </div>
+    <div class="postimg">${emoji}</div>
+    <div class="postbody">
+      <div class="actions">
+        <button class="iconbtn" onclick="like(this)">♡</button>
+        <button class="iconbtn" onclick="toast('Comentários abertos')">○</button>
+        <button class="iconbtn" onclick="toast('Post compartilhado')">➤</button>
+      </div>
+      <div class="caption"><b>${name}</b> ${cap}</div>
+      <div class="muted">#instagraved #momentos</div>
+    </div>
+  </article>`;
+}
+
+function like(b) {
+  b.textContent = b.textContent==="♡" ? "♥" : "♡";
+  toast(b.textContent==="♥" ? "Curtido" : "Curtida removida");
+}
+
+function search() {
+  const all = accounts.map(a => ({id:a.id,name:a.name,username:a.username,avatar:a.avatar,local:true}));
+  onlineUsers.forEach(u => { if(!all.some(x=>normalizeUsername(x.username)===normalizeUsername(u.username))) all.push({id:'online:'+normalizeUsername(u.username),name:u.name,username:u.username,avatar:u.avatar,online:true}); });
+  const seen = new Set();
+  const people = all.filter(u => {
+    const key = u.username.toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key); return true;
+  });
+
+  return `<div class="content">
+    <input class="search" placeholder="Pesquisar pessoas..." oninput="filterUsers(this.value)">
+    <div id="results">
+      ${people.map(u => `
+        <div class="panel row">
+          <img class="account-avatar" src="${u.avatar || makeAvatar(u.name)}" alt="">
+          <div class="grow"><b>${escapeHtml(u.name)}</b><div class="muted">@${escapeHtml(u.username)}</div></div>
+          <button class="pill" onclick="viewProfile('${escapeHtml(u.id)}')">Ver perfil</button>
+          <button class="pill" onclick="followUser('${escapeHtml(u.id)}')">${isFollowing(u.id)?'Seguindo':'Seguir'}</button>
+        </div>`).join("")}
+    </div>
+  </div>`;
+}
+
+function filterUsers(v) {
+  document.querySelectorAll("#results .row").forEach(r =>
+    r.style.display = r.innerText.toLowerCase().includes(v.toLowerCase()) ? "flex" : "none"
+  );
+}
+
+function create() {
+  return `<div class="content">
+    <h2>Criar</h2>
+    <div class="panel" style="text-align:center">
+      <div style="font-size:55px">📷</div>
+      <h3>Abra a câmera do Instagraved</h3>
+      <p class="muted">Arraste para o lado para alternar entre POST, STORY, REEL e LIVE.</p>
+      <button class="primary" onclick="openCamera('post')">Abrir câmera</button>
+    </div>
+    <div class="panel"><b>Atalhos</b>
+      <button class="primary" onclick="openCamera('story')">📸 Criar Story</button>
+      <button class="primary" onclick="openCamera('live')">🔴 Iniciar Live</button>
+      <button class="primary" onclick="go('profile')">🖼️ Trocar foto de perfil</button>
+    </div>
+  </div>`;
+}
+
+let cameraMode = 'post';
+let cameraStream = null;
+let cameraFacing = 'user';
+let cameraSwipeX = 0;
+let cameraRecorder = null;
+let cameraChunks = [];
+
+function modeIndex(){ return ['post','story','reel','live'].indexOf(cameraMode); }
+function modeLabel(){ return {post:'POST',story:'STORY',reel:'REEL',live:'LIVE'}[cameraMode]; }
+function setCameraMode(m){
+  cameraMode=m;
+  const root=document.getElementById('cameraPage');
+  if(!root) return;
+  root.querySelectorAll('.mode').forEach(b=>b.classList.toggle('active',b.dataset.mode===m));
+  const cap=document.getElementById('cameraCapture');
+  if(cap) cap.classList.toggle('live',m==='live');
+  const hint=document.getElementById('cameraHint');
+  if(hint) hint.textContent = m==='live' ? 'Toque no botão para iniciar/encerrar sua Live' : m==='story' ? 'Tire uma foto para publicar no Story' : m==='reel' ? 'Grave um vídeo curto' : 'Tire uma foto para publicar';
+  if(m==='live') startLiveCameraPreview();
+  if(m!=='live'){ const label=document.getElementById('liveCameraLabel'); if(label) label.style.display='none'; const counter=document.getElementById('liveCameraCounter'); if(counter) counter.style.display='none'; }
+}
+
+async function openCamera(initial='post'){
+  cameraMode=initial;
+  const d=document.createElement('div');
+  d.id='cameraPage'; d.className='camera-page';
+  d.innerHTML=`
+    <div class="camera-preview" id="cameraPreview">
+      <video id="cameraVideo" autoplay playsinline muted></video>
+      <div class="camera-fallback" id="cameraFallback">📷</div>
+      <div class="camera-top"><button class="camera-close" onclick="closeCamera()">×</button><button class="camera-tool" onclick="toggleCameraFlash()">⚙</button></div>
+      <div class="camera-side">
+        <button onclick="cameraText()">Aa &nbsp; Criar</button>
+        <button onclick="cameraBoomerang()">∞ &nbsp; Boomerang</button>
+        <button onclick="cameraEffects()">✺ &nbsp; Efeitos</button>
+      </div>
+      <div class="camera-audience" id="cameraAudience" style="display:none">👥 Todos⌄</div>
+      <div class="live-camera-label" id="liveCameraLabel" style="display:none"><span class="live-status-dot"></span><span class="live-red">AO VIVO</span></div>
+      <div class="live-camera-counter" id="liveCameraCounter" style="display:none">👥 0</div>
+    </div>
+    <div class="camera-controls">
+      <div class="mode-row">
+        <button class="mode" data-mode="post" onclick="setCameraMode('post')">POST</button>
+        <button class="mode" data-mode="story" onclick="setCameraMode('story')">STORY</button>
+        <button class="mode" data-mode="reel" onclick="setCameraMode('reel')">REEL</button>
+        <button class="mode" data-mode="live" onclick="setCameraMode('live')">LIVE</button>
+      </div>
+      <div class="capture-row">
+        <img id="cameraGallery" class="gallery-thumb" src="${account.avatar || makeAvatar(account.name)}" alt="">
+        <button id="cameraCapture" class="capture" onclick="cameraCapture()"></button>
+        <button class="flip" onclick="flipCamera()">↻</button>
+      </div>
+      <div class="camera-hint" id="cameraHint">Tire uma foto para publicar</div>
+    </div>`;
+  document.body.appendChild(d);
+  setCameraMode(initial);
+  const preview=document.getElementById('cameraPreview');
+  preview.addEventListener('touchstart',e=>{cameraSwipeX=e.changedTouches[0].clientX},{passive:true});
+  preview.addEventListener('touchend',e=>{
+    const dx=e.changedTouches[0].clientX-cameraSwipeX;
+    if(Math.abs(dx)>55){ const modes=['post','story','reel','live']; let i=modeIndex()+(dx<0?1:-1); if(i<0)i=3;if(i>3)i=0;setCameraMode(modes[i]); }
+  },{passive:true});
+  await startCameraStream();
+}
+
+async function startCameraStream(){
+  try{
+    if(cameraStream) cameraStream.getTracks().forEach(t=>t.stop());
+    cameraStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:cameraFacing},audio:true});
+    const v=document.getElementById('cameraVideo');
+    if(v){v.srcObject=cameraStream; document.getElementById('cameraFallback').style.display='none';}
+  }catch(e){
+    document.getElementById('cameraFallback').style.display='grid';
+    toast('Permita o acesso à câmera para usar esta função.');
+  }
+}
+async function flipCamera(){cameraFacing=cameraFacing==='user'?'environment':'user';await startCameraStream();}
+function toggleCameraFlash(){toast('Controles da câmera abertos');}
+function cameraText(){toast('Modo Criar');}
+function cameraBoomerang(){toast('Boomerang selecionado');}
+function cameraEffects(){toast('Efeitos selecionados');}
+async function startLiveCameraPreview(){
+  const aud=document.getElementById('cameraAudience'); if(aud) aud.style.display='block';
+  const label=document.getElementById('liveCameraLabel'); if(label) label.style.display='flex';
+  const counter=document.getElementById('liveCameraCounter'); if(counter){counter.style.display='block';counter.textContent='👥 '+Number(account.liveViewers||0);}
+}
+function cameraCapture(){
+  if(cameraMode==='live') return toggleLiveFromCamera();
+  const v=document.getElementById('cameraVideo');
+  if(!v || !cameraStream) return toast('Câmera não disponível.');
+  if(cameraMode==='reel') return recordReel();
+  const canvas=document.createElement('canvas'); canvas.width=v.videoWidth||720; canvas.height=v.videoHeight||1280;
+  canvas.getContext('2d').drawImage(v,0,0,canvas.width,canvas.height);
+  const media=canvas.toDataURL('image/jpeg',.88);
+  if(cameraMode==='story'){
+    account.story={media,type:'image',createdAt:Date.now(),expiresAt:Date.now()+24*60*60*1000};
+    updateAccount(); toast('Story publicado!'); closeCamera(); go('home');
+  }else{
+    account.posts=account.posts||[]; account.posts.push({id:'p_'+Date.now(),text:'',media,type:'image',createdAt:new Date().toISOString()});
+    updateAccount(); toast('Foto publicada!'); closeCamera(); go('home');
+  }
+}
+function recordReel(){
+  if(!cameraStream) return toast('Câmera não disponível.');
+  if(cameraRecorder && cameraRecorder.state==='recording'){cameraRecorder.stop();return;}
+  cameraChunks=[];
+  cameraRecorder=new MediaRecorder(cameraStream,{mimeType:'video/webm'});
+  cameraRecorder.ondataavailable=e=>{if(e.data.size)cameraChunks.push(e.data)};
+  cameraRecorder.onstop=()=>{const blob=new Blob(cameraChunks,{type:'video/webm'}); const r=new FileReader(); r.onload=()=>{account.posts=account.posts||[];account.posts.push({id:'p_'+Date.now(),text:'Meu Reel',media:r.result,type:'video',createdAt:new Date().toISOString()});updateAccount();toast('Reel publicado!');closeCamera();go('home')};r.readAsDataURL(blob)};
+  cameraRecorder.start(); toast('🔴 Gravando Reel... toque novamente para parar');
+}
+function toggleLiveFromCamera(){
+  if(account.live){
+    account.live=false;
+    account.liveStartedAt=0;
+    account.liveViewers=0;
+    updateAccount();
+    toast('🔴 Live encerrada.');
+    closeCamera();
+    go('home');
+    return;
+  }
+  account.live=true;
+  account.liveStartedAt=Date.now();
+  account.liveViewers=0;
+  account.liveViewerIds=[];
+  updateAccount();
+  toast('🔴 Você está AO VIVO!');
+  const h=document.getElementById('cameraHint'); if(h)h.textContent='🔴 AO VIVO — toque para encerrar';
+  const label=document.getElementById('liveCameraLabel'); if(label) label.style.display='flex';
+  const counter=document.getElementById('liveCameraCounter'); if(counter){counter.style.display='block';counter.textContent='👥 0';}
+}
+function closeCamera(){
+  if(cameraRecorder && cameraRecorder.state==='recording') cameraRecorder.stop();
+  if(cameraStream){cameraStream.getTracks().forEach(t=>t.stop());cameraStream=null;}
+  document.getElementById('cameraPage')?.remove();
+}
+
+function readImageFile(file) {
+  return new Promise((resolve,reject)=>{
+    if (!file) return resolve("");
+    const r = new FileReader();
+    r.onload = () => resolve(r.result);
+    r.onerror = reject;
+    r.readAsDataURL(file);
+  });
+}
+
+function previewPost(input) {
+  const file = input.files?.[0];
+  if (!file) return;
+  const img = document.getElementById("postPreview");
+  img.src = URL.createObjectURL(file);
+  img.style.display = "block";
+}
+
+async function createMediaPost() {
+  const text = document.getElementById("postText")?.value.trim() || "";
+  const imageFile = document.getElementById("postImageFile")?.files?.[0];
+  const videoFile = document.getElementById("postVideoFile")?.files?.[0];
+
+  if (!imageFile && !videoFile && !text) {
+    return toast("Escolha uma foto, vídeo ou escreva uma legenda.");
+  }
+  if (imageFile && videoFile) {
+    return toast("Escolha foto OU vídeo para o mesmo post.");
+  }
+
+  const file = imageFile || videoFile;
+  const media = await readImageFile(file);
+  const type = videoFile ? "video" : "image";
+
+  account.posts = account.posts || [];
+  account.posts.push({
+    id:"p_"+Date.now(),
+    text,
+    media,
+    type,
+    createdAt:new Date().toISOString()
+  });
+
+  updateAccount();
+  toast("Publicado!");
+  go("home");
+}
+
+async function createMediaStory() {
+  const imageFile = document.getElementById("storyImageFile")?.files?.[0];
+  const videoFile = document.getElementById("storyVideoFile")?.files?.[0];
+
+  if (!imageFile && !videoFile) {
+    return toast("Escolha uma foto ou vídeo para o Story.");
+  }
+  if (imageFile && videoFile) {
+    return toast("Escolha foto OU vídeo para o Story.");
+  }
+
+  const file = imageFile || videoFile;
+  const media = await readImageFile(file);
+
+  account.story = {
+    media,
+    type: videoFile ? "video" : "image",
+    createdAt: Date.now(),
+    expiresAt: Date.now() + 24*60*60*1000
+  };
+
+  updateAccount();
+  toast("Story publicado!");
+  go("home");
+}
+
+
+function startLive(){ openCamera('live'); }
+function stopLive(){
+  account.live=false; account.liveStartedAt=0; account.liveViewers=0; account.liveViewerIds=[]; updateAccount(); toast("🔴 Live encerrada."); go("home");
+}
+function liveViewerAvatars(a){
+  const ids=Array.isArray(a.liveViewerIds)?a.liveViewerIds:[];
+  return ids.map(id=>accounts.find(x=>x.id===id)).filter(Boolean).slice(0,5);
+}
+
+function refreshLiveCounter(hostId){
+  const a=accounts.find(x=>x.id===hostId);
+  if(!a) return;
+  const count=Number(a.liveViewers||0);
+  const els=[document.getElementById('watchLiveCount'),document.getElementById('watchLiveCount2'),document.getElementById('liveCameraCounter')].filter(Boolean);
+  els.forEach(el=>el.textContent='👥 '+count);
+  const stack=document.getElementById('watchLiveAvatars');
+  if(stack){
+    const avs=liveViewerAvatars(a);
+    stack.innerHTML=avs.map(v=>`<img src="${v.avatar || makeAvatar(v.name)}" title="${escapeHtml(v.name)}">`).join('');
+  }
+}
+
+function watchLive(id){
+  const a=accounts.find(x=>x.id===id);
+  if(!a || !a.live) return toast('Essa Live já terminou.');
+  if(!Array.isArray(a.liveViewerIds)) a.liveViewerIds=[];
+  // A mesma conta só conta uma vez enquanto estiver assistindo.
+  if(account && account.id!==a.id && !a.liveViewerIds.includes(account.id)) a.liveViewerIds.push(account.id);
+  a.liveViewers=a.liveViewerIds.length;
+  saveAccounts();
+
+  const d=document.createElement('div');
+  d.id='liveViewerPage';
+  d.style.cssText='position:fixed;inset:0;background:#080808;color:#fff;z-index:300;padding:18px;overflow:auto';
+  d.innerHTML=`
+    <div style="max-width:620px;margin:25px auto">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:10px">
+        <div class="live-badge"><span class="live-status-dot"></span> AO VIVO</div>
+        <div class="live-viewer-count" id="watchLiveCount">👥 ${a.liveViewers}</div>
+      </div>
+      <div class="panel" style="background:#171717;color:#fff;border-color:#333">
+        <div class="row">
+          <img class="account-avatar" src="${a.avatar || makeAvatar(a.name)}">
+          <div class="grow"><b>${escapeHtml(a.name)}</b><div class="live-red">● AO VIVO</div></div>
+          <button style="background:#fff2;color:#fff;border:0;border-radius:50%;width:44px;height:44px;font-size:25px" onclick="leaveLiveViewer('${a.id}')">×</button>
+        </div>
+        <div style="margin-top:12px;display:flex;align-items:center;gap:8px"><b>👥 Pessoas na Live</b><span id="watchLiveAvatars" class="live-avatar-stack"></span></div>
+        <div style="margin-top:14px;height:430px;border-radius:18px;background:#111;display:grid;place-items:center;overflow:hidden;position:relative">
+          <div style="font-size:70px">📹</div>
+          <div style="position:absolute;top:14px;left:14px" class="live-badge">AO VIVO</div>
+          <div style="position:absolute;top:14px;right:14px" class="live-viewer-count" id="watchLiveCount2">👥 ${a.liveViewers}</div>
+        </div>
+        <h3>${escapeHtml(a.name)} está ao vivo</h3>
+        <p style="opacity:.75">Ao entrar, você é adicionado ao contador. Ao sair, seu perfil é retirado e o número diminui.</p>
+      </div>
+    </div>`;
+  document.body.appendChild(d);
+  refreshLiveCounter(a.id);
+}
+
+function leaveLiveViewer(id){
+  const a=accounts.find(x=>x.id===id);
+  if(a){
+    if(!Array.isArray(a.liveViewerIds)) a.liveViewerIds=[];
+    a.liveViewerIds=a.liveViewerIds.filter(x=>x!==account?.id);
+    a.liveViewers=a.liveViewerIds.length;
+    saveAccounts();
+  }
+  document.getElementById('liveViewerPage')?.remove();
+  toast('Você saiu da Live.');
+}
+
+function storyMine() {
+  if (account.story && account.story.expiresAt > Date.now()) {
+    viewStory(account.id);
+  } else {
+    toast("Você ainda não publicou um Story.");
+    go("create");
+  }
+}
+
+function viewStory(id) {
+  const a = id === account.id ? account : accounts.find(x=>x.id===id);
+  if (!a || !a.story || a.story.expiresAt <= Date.now()) {
+    return toast("Esse Story não está mais disponível.");
+  }
+
+  const media = a.story.type === "video"
+    ? `<video src="${a.story.media}" style="width:100%;height:100%;object-fit:contain" controls autoplay playsinline></video>`
+    : `<img src="${a.story.media}" style="width:100%;height:100%;object-fit:contain">`;
+
+  const d = document.createElement("div");
+  d.style.cssText="position:fixed;inset:0;background:#000;z-index:200;display:grid;place-items:center";
+  d.innerHTML=`
+    <button style="position:absolute;top:18px;right:18px;z-index:2;background:#0008;color:#fff;border:0;border-radius:50%;width:44px;height:44px;font-size:24px" onclick="this.parentElement.remove()">×</button>
+    ${media}
+    <div style="position:absolute;top:20px;left:20px;color:#fff;font-weight:700;text-shadow:0 2px 5px #000">${escapeHtml(a.name)}</div>`;
+  document.body.appendChild(d);
+}
+
+
+function updateAccount() {
+  const i = accounts.findIndex(a=>a.id===account.id);
+  if (i >= 0) accounts[i] = account;
+  saveAccounts();
+}
+
+function viewProfile(id) {
+  let a = findAccount(id);
+  let online = false;
+  if(!a && String(id).startsWith('online:')){ const u=onlineUsers.get(normalizeUsername(String(id).slice(7))); if(u) a={id:String(id),name:u.name,username:u.username,avatar:u.avatar,bio:'Online no Instagraved.',posts:[]}, online=true; }
+  if(!a) return toast('Perfil não encontrado.');
+  const mine=a.id===account.id;
+  const following=online ? !!(account.remoteFollowing||[]).includes(normalizeUsername(a.username)) : isFollowing(a.id);
+  const posts=(a.posts||[]).map(p=>p.type==='video'&&p.media?`<video src="${p.media}" controls playsinline></video>`:p.media?`<img src="${p.media}" alt="Post">`:`<div style="display:grid;place-items:center;font-size:35px">📷</div>`).join('');
+  document.getElementById('app').innerHTML=`
+    <div class="top"><button class="iconbtn" onclick="go('${mine?'profile':'home'}')">‹</button><b>${escapeHtml(a.username?'@'+a.username:'Perfil')}</b><button class="iconbtn" onclick="report('${escapeHtml(a.name)}')">•••</button></div>
+    <div class="ig-profile">
+      <div class="ig-profile-head">
+        <div class="ig-profile-top"><img class="ig-profile-avatar" src="${a.avatar||makeAvatar(a.name)}"><div class="ig-profile-stats"><div><b>${a.posts?.length||0}</b><span>publicações</span></div><div><b>${a.followers||0}</b><span>seguidores</span></div><div><b>${a.following||0}</b><span>seguindo</span></div></div></div>
+        <div class="ig-profile-name">${escapeHtml(a.name)}</div><div class="muted">@${escapeHtml(a.username||'usuario')}</div><div class="ig-profile-bio">${escapeHtml(a.bio||'Personalize este espaço.')}</div>
+        <div class="ig-profile-actions">${mine?`<button class="ig-msg" onclick="editProfile()">Editar perfil</button>`:`<button class="ig-follow ${following?'following':''}" onclick="followUser('${escapeHtml(a.id)}').then(()=>viewProfile('${escapeHtml(a.id)}'))">${following?'Seguindo':'Seguir'}</button><button class="ig-msg" onclick="chatByName('${escapeHtml(a.username)}')">Mensagem</button>`}</div>
+      </div>
+      <div class="ig-grid">${posts||'<div style="grid-column:1/-1;text-align:center;padding:55px 15px;color:#888">Cria a tua primeira publicação</div>'}</div>
+    </div>`;
+}
+
+function editProfile() {
+  document.getElementById("app").innerHTML = `
+    <div class="top"><button class="iconbtn" onclick="go('profile')">‹</button><b>Editar perfil</b><span></span></div>
+    <div class="content">
+      <div class="panel">
+        <input id="editName" class="field" value="${escapeHtml(account.name)}" placeholder="Nome">
+        <img class="account-avatar" src="${account.avatar || makeAvatar(account.name)}" alt="">
+        <input id="editBio" class="field" value="${escapeHtml(account.bio||"")}" placeholder="Bio">
+        <label class="file-label">🖼️ Trocar foto de perfil
+          <input id="avatarFile" type="file" accept="image/*">
+        </label>
+        <button class="primary" onclick="saveProfileEdit()">Salvar alterações</button>
+      </div>
+    </div>`;
+}
+
+async function saveProfileEdit() {
+  const name = document.getElementById("editName")?.value.trim();
+  const bio = document.getElementById("editBio")?.value.trim() || "";
+  const file = document.getElementById("avatarFile")?.files?.[0];
+
+  if (!name) return toast("Digite seu nome.");
+  account.name = name;
+  account.bio = bio;
+  if (file) account.avatar = await readImageFile(file);
+  else if (!account.avatar || account.avatar.startsWith("data:image/svg+xml")) account.avatar = makeAvatar(name);
+  updateAccount();
+  toast("Perfil atualizado!");
+  go("profile");
+}
+
+function pick(x) {
+  toast(x + " selecionado — recurso visual de demonstração.");
+}
+
+async function subscribeOnlinePresence() {
+  if (!sb || !account) return;
+  if (presenceChannel) { try { await sb.removeChannel(presenceChannel); } catch {} }
+  onlineUsers = new Map(); presenceReady=false;
+  presenceChannel = sb.channel("instagraved-online", { config: { presence: { key: normalizeUsername(account.username) } } });
+  const refreshOnline = () => {
+    const state = presenceChannel.presenceState(); const map = new Map();
+    Object.values(state).flat().forEach(u => { if(!u||!u.username)return; const key=normalizeUsername(u.username); if(key===normalizeUsername(account.username))return; map.set(key,u); });
+    onlineUsers=map; if(current==="messages"&&document.getElementById("onlinePeople")) renderOnlinePeople();
+  };
+  presenceChannel
+    .on("presence",{event:"sync"},refreshOnline)
+    .on("presence",{event:"join"},refreshOnline)
+    .on("presence",{event:"leave"},refreshOnline)
+    .on("broadcast",{event:"chat-message"},({payload})=>receiveOnlineMessage(payload))
+    .on("broadcast",{event:"incoming-call"},({payload})=>{ if(!payload)return; if(normalizeUsername(payload.to)!==normalizeUsername(account.username))return; pendingCall=payload; showIncomingCall(payload); })
+    .on("broadcast",{event:"follow-notification"},({payload})=>{
+      if(!payload || normalizeUsername(payload.to)!==normalizeUsername(account.username)) return;
+      account.remoteFollowers=Array.isArray(account.remoteFollowers)?account.remoteFollowers:[];
+      const follower=normalizeUsername(payload.fromUsername);
+      if(follower && !account.remoteFollowers.includes(follower)) account.remoteFollowers.push(follower);
+      pushNotification({type:payload.kind==='follow_back'?'follow_back':'follow',text:payload.text||('@'+payload.fromUsername+' te seguiu'),fromId:payload.fromId,fromName:payload.fromName,fromUsername:payload.fromUsername});
+      toast('🔔 '+(payload.text||'Você recebeu uma nova interação.'));
+    });
+  await presenceChannel.subscribe(async status=>{
+    if(status==='SUBSCRIBED'){
+      presenceReady=true;
+      await presenceChannel.track({id:account.id,username:normalizeUsername(account.username),name:account.name,avatar:account.avatar||makeAvatar(account.name),online_at:new Date().toISOString()});
+    }
+  });
+}
+
+function renderOnlinePeople() {
+  const box = document.getElementById("onlinePeople");
+  if (!box) return;
+  const people = Array.from(onlineUsers.values());
+  box.innerHTML = people.length ? people.map(u => `
+    <div class="panel row">
+      <span style="position:relative;display:block">
+        <img class="account-avatar" src="${u.avatar || makeAvatar(u.name)}" alt="">
+        <span style="position:absolute;right:0;bottom:0;width:12px;height:12px;background:#22c55e;border:2px solid var(--card);border-radius:50%"></span>
+      </span>
+      <div class="grow"><b>${escapeHtml(u.name || u.username)}</b><div class="muted">@${escapeHtml(u.username)} · 🟢 online</div></div>
+      <button class="pill" onclick="chatOnline('${escapeHtml(u.username)}')">Mensagem</button>
+    </div>`).join("") : `<div class="panel muted">Nenhuma pessoa está online agora.</div>`;
+}
+
+function viewOnlineProfile(username){
+  const u=onlineUsers.get(normalizeUsername(username));
+  if(!u) return toast("Essa pessoa não está online agora.");
+  document.getElementById("app").innerHTML=`<div class="top"><button class="iconbtn" onclick="chatOnline('${escapeHtml(u.username)}')">‹</button><b>Perfil</b><span></span></div><div class="ig-profile"><div class="ig-profile-head"><div class="ig-profile-top"><img class="ig-profile-avatar" src="${u.avatar||makeAvatar(u.name||u.username)}"><div class="ig-profile-stats"><div><b>—</b><span>publicações</span></div><div><b>🟢</b><span>online</span></div><div><b>💬</b><span>mensagem</span></div></div></div><div class="ig-profile-name">${escapeHtml(u.name||u.username)}</div><div class="muted">@${escapeHtml(u.username)}</div><div class="ig-profile-bio">Disponível agora no Instagraved.</div><div class="ig-profile-actions"><button class="ig-msg" onclick="chatOnline('${escapeHtml(u.username)}')">Mensagem</button><button class="ig-msg" onclick="startCall('${escapeHtml(u.username)}','voz')">☎ Ligação</button><button class="ig-msg" onclick="startCall('${escapeHtml(u.username)}','vídeo')">▣ Vídeo</button></div></div></div>`;
+}
+
+async function chatOnline(username) {
+  const u = onlineUsers.get(normalizeUsername(username));
+  if (!u) return toast("Essa pessoa saiu do online.");
+  activeChat=u.name||u.username; activePeerId="online:"+normalizeUsername(u.username);
+  document.getElementById("app").innerHTML=`
+    <div class="top"><button class="iconbtn" onclick="go('messages')">‹</button><button class="chat-profile-btn" onclick="viewOnlineProfile('${escapeHtml(u.username)}')"><img src="${u.avatar||makeAvatar(u.name||u.username)}" style="width:34px;height:34px;border-radius:50%;object-fit:cover"></button><b style="flex:1;margin-left:8px">${escapeHtml(u.name||u.username)}</b><div class="chat-actionbar"><button class="iconbtn" onclick="startCall('${escapeHtml(u.username)}','voz')">☎</button><button class="iconbtn" onclick="startCall('${escapeHtml(u.username)}','vídeo')">▣</button></div></div>
+    <div class="content" style="padding-bottom:125px"><div id="chatList" class="panel" style="max-height:60vh;overflow:auto"></div>
+      <div style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(520px,100%);padding:10px;background:var(--nav);display:flex;gap:6px;border-top:1px solid var(--line);flex-wrap:wrap">
+        <input id="msgInput" class="field" style="margin:0;flex:1;min-width:160px" placeholder="Escreva uma mensagem..." onkeydown="if(event.key==='Enter')sendOnlineMessage('${escapeHtml(u.username)}')">
+        <input id="photoInput" type="file" accept="image/*" hidden onchange="sendOnlineMedia('${escapeHtml(u.username)}',this,'image')">
+        <input id="videoInput" type="file" accept="video/*" hidden onchange="sendOnlineMedia('${escapeHtml(u.username)}',this,'video')">
+        <button class="pill" onclick="document.getElementById('photoInput').click()">📷 Foto</button>
+        <button class="pill" onclick="document.getElementById('videoInput').click()">🎥 Vídeo</button>
+        <button id="audioRecordBtn" class="pill" onclick="toggleAudioRecording('${escapeHtml(u.username)}')">🎙️ Áudio</button>
+        <button class="primary" style="width:auto;margin:0;padding:0 18px" onclick="sendOnlineMessage('${escapeHtml(u.username)}')">Enviar</button>
+      </div></div>`;
+  await subscribeOnlineChat(u.username);
+  renderOnlineConversation(u.username);
+}
+function mediaBubble(m, outgoing){
+  const align=outgoing?'right':'left';
+  const src=m.media_url||m.mediaData||'';
+  let body='';
+  if(m.media_type==='image') body=`<img src="${src}" style="max-width:220px;max-height:280px;border-radius:14px;display:block" alt="Foto">`;
+  else if(m.media_type==='video') body=`<video src="${src}" controls playsinline style="max-width:240px;max-height:300px;border-radius:14px;display:block"></video>`;
+  else if(m.media_type==='audio') body=`<audio src="${src}" controls style="max-width:250px"></audio>`;
+  return `<div style="text-align:${align};margin:10px 0">${body}<div class="muted" style="font-size:11px;margin-top:3px">${outgoing?'Você':'Mensagem de mídia'}</div></div>`;
+}
+function renderOnlineConversation(username){
+  const me='online:'+normalizeUsername(account.username), peer='online:'+normalizeUsername(username);
+  const list=document.getElementById('chatList'); if(!list)return;
+  const msgs=localMessages.filter(m=>(m.sender_id===me&&m.receiver_id===peer)||(m.sender_id===peer&&m.receiver_id===me)).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at));
+  list.innerHTML=msgs.length?msgs.map(m=>m.media_type?mediaBubble(m,m.sender_id===me):`<div style="text-align:${m.sender_id===me?'right':'left'};margin:10px 0"><span class="pill">${escapeHtml(m.text)}</span></div>`).join(''):`<div class="muted">Nenhuma mensagem ainda.</div>`;
+  list.scrollTop=list.scrollHeight;
+}
+async function subscribeOnlineChat(username){
+  if(!sb||!account)return;
+  if(messageChannel){try{await sb.removeChannel(messageChannel);}catch{}}
+  const peer=normalizeUsername(username), me=normalizeUsername(account.username), room=[me,peer].sort().join(':');
+  messageChannel=sb.channel('instagraved-chat:'+room);
+  messageChannel.on('broadcast',{event:'chat-message'},({payload})=>receiveOnlineMessage(payload));
+  await messageChannel.subscribe();
+}
+async function sendOnlineMessage(username){
+  const el=document.getElementById('msgInput'), text=el?.value.trim();
+  if(!text)return;
+  if(!sb)return toast('Ative a conexão online do Instagraved para enviar mensagens entre aparelhos.');
+  const to=normalizeUsername(username), from=normalizeUsername(account.username);
+  const channel=presenceChannel;
+  if(!channel || !presenceReady){toast('Conectando... tente novamente em 1 segundo.');return;}
+  const msg={id:'online_'+Date.now()+'_'+Math.random().toString(36).slice(2,8),from,to,text,fromId:account.id,fromName:account.name,created_at:new Date().toISOString(),kind:'text'};
+  const local={id:msg.id,sender_id:'online:'+from,receiver_id:'online:'+to,text,created_at:msg.created_at};
+  const result=await channel.send({type:'broadcast',event:'chat-message',payload:msg});
+  if(result?.error){toast('Não foi possível entregar agora.');return;}
+  localMessages.push(local);saveMessages();appendMessage(local);el.value='';
+}
+async function sendOnlineMedia(username,input,mediaType){
+  const file=input?.files?.[0]; if(!file)return;
+  input.value='';
+  if(!sb||!presenceChannel||!presenceReady)return toast('Conectando ao Instagraved... tente novamente.');
+  // Broadcast é ótimo para mensagens pequenas. Para manter este protótipo leve,
+  // comprime fotos e limita mídia enviada diretamente pelo canal.
+  if(file.size>250*1024) return toast('Esse arquivo é grande demais para envio direto. Escolha um arquivo menor (até 250 KB).');
+  const reader=new FileReader();
+  reader.onload=async()=>{
+    const from=normalizeUsername(account.username),to=normalizeUsername(username);
+    const msg={id:'media_'+Date.now()+'_'+Math.random().toString(36).slice(2,8),from,to,fromId:account.id,fromName:account.name,created_at:new Date().toISOString(),kind:'media',media_type:mediaType,media_name:file.name,mediaData:String(reader.result)};
+    const result=await presenceChannel.send({type:'broadcast',event:'chat-message',payload:msg});
+    if(result?.error)return toast('Não foi possível enviar essa mídia.');
+    const local={id:msg.id,sender_id:'online:'+from,receiver_id:'online:'+to,text:'',media_type:mediaType,mediaData:msg.mediaData,media_name:file.name,created_at:msg.created_at};
+    localMessages.push(local);saveMessages();appendMessage(local);toast(mediaType==='image'?'📷 Foto enviada':mediaType==='video'?'🎥 Vídeo enviado':'🎙️ Áudio enviado');
+  };
+  reader.readAsDataURL(file);
+}
+async function toggleAudioRecording(username){
+  const btn=document.getElementById('audioRecordBtn');
+  if(recordingAudio){
+    recordingAudio=false; mediaRecorder?.stop(); if(btn)btn.textContent='🎙️ Áudio'; return;
+  }
+  if(!navigator.mediaDevices?.getUserMedia||!window.MediaRecorder)return toast('Este navegador não permite gravar áudio.');
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    mediaChunks=[]; mediaRecorder=new MediaRecorder(stream,{mimeType:'audio/webm'}); recordingAudio=true;
+    if(btn)btn.textContent='⏹️ Parar áudio';
+    mediaRecorder.ondataavailable=e=>{if(e.data.size)mediaChunks.push(e.data)};
+    mediaRecorder.onstop=()=>{
+      stream.getTracks().forEach(t=>t.stop());
+      const blob=new Blob(mediaChunks,{type:'audio/webm'});
+      if(blob.size>250*1024)return toast('O áudio ficou grande. Grave um trecho mais curto.');
+      const reader=new FileReader(); reader.onload=async()=>{
+        if(!presenceChannel||!presenceReady)return toast('Conexão perdida.');
+        const from=normalizeUsername(account.username),to=normalizeUsername(username),now=new Date().toISOString();
+        const msg={id:'audio_'+Date.now()+'_'+Math.random().toString(36).slice(2,8),from,to,fromId:account.id,fromName:account.name,created_at:now,kind:'media',media_type:'audio',media_name:'audio.webm',mediaData:String(reader.result)};
+        const result=await presenceChannel.send({type:'broadcast',event:'chat-message',payload:msg});
+        if(result?.error)return toast('Não foi possível enviar o áudio.');
+        const local={id:msg.id,sender_id:'online:'+from,receiver_id:'online:'+to,text:'',media_type:'audio',mediaData:msg.mediaData,created_at:now};
+        localMessages.push(local);saveMessages();appendMessage(local);toast('🎙️ Áudio enviado');
+      }; reader.readAsDataURL(blob);
+    };
+    mediaRecorder.start(); toast('🎙️ Gravando... toque novamente para parar.');
+  }catch(e){recordingAudio=false;if(btn)btn.textContent='🎙️ Áudio';toast('Permita o acesso ao microfone para gravar áudio.');}
+}
+
+function messages() {
+  const localPeople = accounts.filter(a => a.id !== account.id && !a.banned);
+  return `<div class="content"><h2>Mensagens</h2>
+    <p class="muted">Mensagens, ligação e vídeo aparecem aqui quando a pessoa está online.</p>
+    <div id="onlinePeople"></div>
+    <h3 style="margin-top:22px">Contas deste aparelho</h3>
+    ${localPeople.length
+      ? localPeople.map(u => personRow(u)).join("")
+      : `<div class="panel"><b>Nenhuma outra conta neste aparelho.</b></div>`}
+  </div>`;
+}
+
+function personRow(u) {
+  return `<div class="panel row">
+    <img class="account-avatar" src="${u.avatar || makeAvatar(u.name)}" alt="">
+    <div class="grow"><b>${escapeHtml(u.name)}</b><div class="muted">@${escapeHtml(u.username)}</div></div>
+    <button class="pill" onclick="viewProfile('${escapeHtml(u.id)}')">Perfil</button>
+    <button class="pill" onclick="chatByName('${escapeHtml(u.username)}')">Mensagem</button>
+    <button class="pill" onclick="startCall('${escapeHtml(u.username)}','voz')">☎</button>
+    <button class="pill" onclick="startCall('${escapeHtml(u.username)}','vídeo')">▣</button>
+  </div>`;
+}
+
+function chatDemo(n) {
+  activeChat = n;
+  activePeerId = "";
+  document.getElementById("app").innerHTML = `
+    <div class="top">
+      <button class="iconbtn" onclick="go('messages')">‹</button>
+      <b>${escapeHtml(n)}</b><span></span>
+    </div>
+    <div class="content">
+      <div class="panel">
+        <h3>Conversa de demonstração</h3>
+        <p class="muted">Esta pessoa é um perfil de exemplo. Para testar mensagens entre contas, crie duas contas neste aparelho.</p>
+      </div>
+      <div style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(520px,100%);padding:10px;background:var(--nav);border-top:1px solid var(--line)">
+        <input class="field" style="margin:0" placeholder="Mensagem de demonstração" onkeydown="if(event.key==='Enter')toast('Mensagem de demonstração enviada')">
+      </div>
+    </div>`;
+}
+
+async function chatByName(n) {
+  const peer = await findPeer(n);
+  if (!peer) return toast("Pessoa não encontrada.");
+
+  activeChat = peer.name;
+  activePeerId = peer.id;
+
+  document.getElementById("app").innerHTML = `
+    <div class="top">
+      <button class="iconbtn" onclick="go('messages')">‹</button>
+      <button class="chat-profile-btn" onclick="viewProfile('${escapeHtml(peer.id)}')"><img src="${peer.avatar||makeAvatar(peer.name)}" style="width:34px;height:34px;border-radius:50%;object-fit:cover"></button>
+      <b style="flex:1;margin-left:8px">${escapeHtml(peer.name)}</b>
+      <div>
+        <button class="iconbtn" onclick="startCall('${escapeHtml(peer.username)}','voz')">☎</button>
+        <button class="iconbtn" onclick="startCall('${escapeHtml(peer.username)}','vídeo')">▣</button>
+      </div>
+    </div>
+    <div class="content" style="padding-bottom:90px">
+      <div id="chatList" class="panel" style="max-height:65vh;overflow:auto"></div>
+      <div style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(520px,100%);padding:10px;background:var(--nav);display:flex;gap:8px;border-top:1px solid var(--line)">
+        <input id="msgInput" class="field" style="margin:0;flex:1" placeholder="Escreva uma mensagem..." onkeydown="if(event.key==='Enter')sendMessage('${escapeHtml(peer.id)}')">
+        <button class="primary" style="width:auto;margin:0;padding:0 18px" onclick="sendMessage('${escapeHtml(peer.id)}')">Enviar</button>
+      </div>
+    </div>`;
+
+  renderLocalChat(peer.id);
+  if (sb && account.id && !String(peer.id).startsWith("local_")) {
+    await subscribeMessages(peer.id);
+  }
+}
+
+function getConversation(a,b) {
+  return localMessages.filter(m =>
+    (m.sender_id===a && m.receiver_id===b) ||
+    (m.sender_id===b && m.receiver_id===a)
+  ).sort((x,y) => new Date(x.created_at)-new Date(y.created_at));
+}
+
+function renderLocalChat(peerId) {
+  const list = document.getElementById("chatList");
+  if (!list) return;
+  const msgs = getConversation(account.id, peerId);
+  list.innerHTML = msgs.length
+    ? msgs.map(m => `<div style="text-align:${m.sender_id===account.id?"right":"left"};margin:10px 0">
+        <span class="pill">${escapeHtml(m.text)}</span>
+      </div>`).join("")
+    : `<div class="muted">Nenhuma mensagem ainda.</div>`;
+  list.scrollTop = list.scrollHeight;
+}
+
+async function subscribeMessages(peerId) {
+  if (!sb || !account) return;
+  if (messageChannel) {
+    try { await sb.removeChannel(messageChannel); } catch {}
+  }
+  messageChannel = sb.channel("messages:" + [account.id,peerId].sort().join(":"));
+  messageChannel.on("broadcast",{event:"new-message"},({payload})=>{
+    if (payload.receiver_id===account.id && payload.sender_id===peerId) {
+      appendMessage(payload);
+    }
+  });
+  await messageChannel.subscribe();
+}
+
+function appendMessage(m) {
+  const list=document.getElementById('chatList'); if(!list)return;
+  const empty=list.querySelector('.muted'); if(empty)empty.remove();
+  list.innerHTML += m.media_type ? mediaBubble(m,m.sender_id===account.id||m.sender_id==='online:'+normalizeUsername(account.username)) : `<div style="text-align:${m.sender_id===account.id||m.sender_id==='online:'+normalizeUsername(account.username)?'right':'left'};margin:10px 0"><span class="pill">${escapeHtml(m.text)}</span></div>`;
+  list.scrollTop=list.scrollHeight;
+}
+
+async function sendMessage(peerId) {
+  const el = document.getElementById("msgInput");
+  const text = el?.value.trim();
+  if (!text) return;
+
+  // Sempre salva localmente primeiro, para o botão funcionar sem Supabase.
+  const local = {
+    id: "msg_" + Date.now() + "_" + Math.random().toString(36).slice(2,7),
+    sender_id: account.id,
+    receiver_id: peerId,
+    text,
+    created_at: new Date().toISOString()
+  };
+  localMessages.push(local);
+  saveMessages();
+  appendMessage(local);
+  el.value = "";
+
+  // Perfis de demonstração com IA respondem automaticamente para o protótipo.
+  const demo = accounts.find(a => a.id === peerId && String(a.id).startsWith("local_demo_"));
+  if (demo) {
+    setTimeout(() => {
+      const replies = ["Oi! 😊 Que bom falar com você!", "Estou aqui no Instagraved!", "Legal! Me conta mais.", "Vi sua mensagem. 😄", "Tudo certo por aqui! Vamos conversar."];
+      const reply = {id:"ai_"+Date.now(), sender_id:demo.id, receiver_id:account.id, text:replies[Math.floor(Math.random()*replies.length)], created_at:new Date().toISOString()};
+      localMessages.push(reply); saveMessages(); appendMessage(reply);
+    }, 900);
+  }
+
+  // Se o destinatário for uma conta Supabase e o backend estiver configurado,
+  // tenta também gravar online. Se falhar, a mensagem local continua funcionando.
+  if (sb && !String(peerId).startsWith("local_")) {
+    try {
+      const { data, error } = await sb.from("messages")
+        .insert({sender_id:account.id, receiver_id:peerId, text})
+        .select().single();
+      if (!error && data && messageChannel) {
+        await messageChannel.send({type:"broadcast",event:"new-message",payload:data});
+      }
+    } catch {}
+  }
+}
+
+function calls() {
+  const people = accounts.filter(a=>a.id!==account.id && !a.banned);
+  return `<div class="content callbox">
+    <div class="callcircle">☎</div>
+    <h2>Chamadas</h2>
+    <p class="muted">Escolha uma pessoa para iniciar uma chamada.</p>
+    ${people.length
+      ? people.map(u=>`<div class="panel row">
+          <img class="account-avatar" src="${u.avatar || makeAvatar(u.name)}" alt="">
+          <div class="grow"><b>${escapeHtml(u.name)}</b><div class="muted">@${escapeHtml(u.username)}</div></div>
+          <button class="pill" onclick="startCall('${escapeHtml(u.username)}','voz')">☎</button>
+          <button class="pill" onclick="startCall('${escapeHtml(u.username)}','vídeo')">▣</button>
+        </div>`).join("")
+      : `<div class="panel">Crie outra conta para testar.</div>`}
+  </div>`;
+}
+
+function profile() {
+  return `<div class="content">
+    <div class="panel">
+      <div class="profileHead">
+        <img class="profileAvatar" src="${account.avatar || makeAvatar(account.name)}" alt="">
+        <div class="grow">
+          <h2 style="margin:0">${escapeHtml(account.name)}</h2>
+          <div class="muted">@${escapeHtml(account.username)}</div>
+          <div class="stats">
+            <div class="stat"><b>${account.posts?.length||0}</b><span class="muted">posts</span></div>
+            <div class="stat"><b>${account.followers||0}</b><span class="muted">seguidores</span></div>
+            <div class="stat"><b>${account.following||0}</b><span class="muted">seguindo</span></div>
+          </div>
+        </div>
+      </div>
+      <button class="primary" onclick="editProfile()">Editar perfil</button>
+    </div>
+    <button class="primary" onclick="go('settings')">Configurações</button>
+  </div>`;
+}
+
+function settings() {
+  return `<div class="content"><h2>Configurações</h2>
+    <div class="panel"><b>Conexão</b>
+      <div class="muted" style="margin-top:6px">
+        ${onlineReady ? "🟢 Supabase configurado" : "🟠 Modo local — funciona sem Supabase"}
+      </div>
+    </div>
+    <div class="panel">
+      <div class="row"><div class="grow"><b>Modo escuro</b></div>
+        <button class="pill" onclick="document.body.classList.toggle('dark')">Alternar</button>
+      </div>
+    </div>
+    <button class="primary" onclick="showHelp()">Central de ajuda</button>
+    <button class="primary" onclick="logout()">Sair da conta</button>
+  </div>`;
+}
+
+function notifications() {
+  markNotificationsRead();
+  const ns=Array.isArray(account.notifications)?account.notifications:[];
+  return `<div class="content"><h2>Notificações</h2>${ns.length?ns.map(n=>{
+    const fromUsername=normalizeUsername(n.fromUsername);
+    const fromAccount=findAccount(n.fromId);
+    const online=onlineUsers.get(fromUsername);
+    const avatar=fromAccount?.avatar || online?.avatar || makeAvatar(n.fromName||fromUsername||'Instagraved');
+    const canOpen=!!fromUsername && (n.type==='message' || n.type==='follow' || n.type==='follow_back');
+    const action=canOpen ? `onclick="openNotification('${escapeHtml(fromUsername)}','${escapeHtml(n.type||'')}')"` : '';
+    const button=n.type==='message' ? `<button class="pill" onclick="event.stopPropagation();openNotification('${escapeHtml(fromUsername)}','message')">Ver mensagem</button>` : '';
+    return `<div class="panel row notif-click" ${action} style="cursor:${canOpen?'pointer':'default'}"><img class="account-avatar" src="${avatar}" alt=""><div class="grow"><b>${escapeHtml(n.fromName||('@'+fromUsername)||'Instagraved')}</b><div class="notif-text">${escapeHtml(n.text||'Nova atividade')}</div>${n.type==='message'?'<div class="muted" style="margin-top:5px">Toque para abrir e responder</div>':''}</div>${button}</div>`;
+  }).join(''):`<div class="panel muted">Nenhuma notificação nova.</div>`}</div>`;
+}
+function openNotification(username,type){
+  if(!username) return;
+  if(type==='message'){
+    const online=onlineUsers.get(normalizeUsername(username));
+    return online ? chatOnline(username) : chatByName(username);
+  }
+  if(type==='follow' || type==='follow_back'){
+    const local=findLocalPeer(username);
+    if(local) return viewProfile(local.id);
+    return toast('@'+username+' interagiu com você.');
+  }
+}
+
+function report(n) {
+  toast("Opções: bloquear ou denunciar @" + n.toLowerCase());
+}
+
+// ================= CHAMADAS ONLINE =================
+// O sistema local não finge que a chamada está conectada.
+// Para chamada entre aparelhos, o Supabase precisa estar configurado.
+
+async function subscribeUserChannel() {
+  if (!sb || !account) return;
+  if (userChannel) { try { await sb.removeChannel(userChannel); } catch {} }
+
+  userChannel = sb.channel("user:" + account.id);
+  userChannel.on("broadcast",{event:"incoming-call"},({payload})=>{
+    pendingCall = payload;
+    showIncomingCall(payload);
+  });
+  await userChannel.subscribe();
+}
+
+function showIncomingCall(payload) {
+  const existing = document.getElementById("incomingCall");
+  if (existing) existing.remove();
+
+  const d = document.createElement("div");
+  d.id = "incomingCall";
+  d.style.cssText = "position:fixed;inset:0;background:#0008;z-index:100;display:grid;place-items:center;padding:20px";
+  d.innerHTML = `<div class="panel" style="width:min(420px,100%);text-align:center">
+    <h2>📞 Chamada recebida</h2>
+    <p>${escapeHtml(payload.fromName||"Alguém")} está ligando por ${payload.type==="video"?"vídeo":"voz"}.</p>
+    <button class="primary" onclick="acceptCall()">Atender</button>
+    <button class="link" onclick="rejectCall()">Recusar</button>
+  </div>`;
+  document.body.appendChild(d);
+}
+
+async function rejectCall() {
+  pendingCall = null;
+  document.getElementById("incomingCall")?.remove();
+  toast("Chamada recusada.");
+}
+
+async function acceptCall() {
+  const p = pendingCall;
+  pendingCall = null;
+  document.getElementById("incomingCall")?.remove();
+  if (!p || !sb) return toast("Backend de chamadas não está conectado.");
+  try {
+    await openCall(p.fromId,p.fromName,p.type,p.channel,false);
+  } catch (e) {
+    console.error(e);
+    toast("Não foi possível atender a ligação. Verifique câmera e microfone.");
+  }
+}
+
+async function startCall(name,type) {
+  if (!sb || !account) {
+    return toast("A chamada entre aparelhos precisa do Supabase configurado.");
+  }
+
+  const peer = await findPeer(name);
+  if (!peer) return toast("Esse amigo não está disponível para ligação agora. Verifique se ele está online.");
+
+  const channelName = "call:" + [account.id,peer.id].sort().join(":");
+
+  // O aviso e a negociação são separados; o receptor não precisa receber
+  // um offer nulo antes de aceitar.
+  // O convite usa o canal global de presença, que o amigo já mantém aberto.
+  // Assim o convite não se perde por falta de uma assinatura prévia no canal user:ID.
+  const callInvite = {
+    fromId:account.id,
+    fromName:account.name,
+    fromUsername:String(account.username).toLowerCase(),
+    toId:peer.id,
+    to:String(peer.username || "").toLowerCase(),
+    type:type==="vídeo"?"video":"voice",
+    channel:channelName
+  };
+  if (presenceChannel) {
+    await presenceChannel.send({type:"broadcast",event:"incoming-call",payload:callInvite});
+  } else {
+    const ch = sb.channel("instagraved-online");
+    await ch.subscribe();
+    await ch.send({type:"broadcast",event:"incoming-call",payload:callInvite});
+    try { await sb.removeChannel(ch); } catch {}
+  }
+
+  await openCall(peer.id,peer.name,type==="vídeo"?"video":"voice",channelName,true);
+}
+
+async function openCall(peerId,peerName,type,channelName,isCaller) {
+  openingCall = true;
+  await endCall(false);
+  activePeerId = peerId;
+
+  if (!navigator.mediaDevices?.getUserMedia) {
+    return toast("O navegador não liberou câmera/microfone.");
+  }
+
+  callChannel = sb.channel(channelName);
+  let remoteDescriptionSet = false;
+  const pendingIceCandidates = [];
+
+  pc = new RTCPeerConnection({
+    iceServers:[
+      {urls:"stun:stun.l.google.com:19302"},
+      {urls:"stun:stun1.l.google.com:19302"}
+    ]
+  });
+
+  pc.onicecandidate = e => {
+    if (e.candidate && callChannel) {
+      callChannel.send({
+        type:"broadcast",
+        event:"ice",
+        payload:{from:account.id,candidate:e.candidate}
+      });
+    }
+  };
+
+  pc.onconnectionstatechange = () => {
+    const status = document.getElementById("callStatus");
+    if (!status) return;
+    const st = pc.connectionState;
+    status.textContent = st === "connected" ? "Conectado" : st === "connecting" ? "Conectando ligação..." : st === "disconnected" ? "Conexão interrompida" : st === "failed" ? "Não foi possível conectar" : "Ligação de voz";
+  };
+
+  pc.ontrack = e => {
+    const stream = e.streams[0];
+    const v = document.getElementById("remoteVideo");
+    const a = document.getElementById("remoteAudio");
+    if (v) v.srcObject = stream;
+    if (a) {
+      a.srcObject = stream;
+      a.play().catch(()=>{});
+    }
+  };
+
+  try {
+    // Voz pede somente microfone; vídeo pede câmera + microfone.
+    localStream = await navigator.mediaDevices.getUserMedia({
+      video:type==="video",
+      audio:true
+    });
+  } catch (err) {
+    console.warn('getUserMedia:',err);
+    openingCall=false;
+    if(pc){try{pc.close();}catch{}}
+    pc=null;
+    if(callChannel&&sb){try{await sb.removeChannel(callChannel);}catch{}}
+    callChannel=null;
+    document.getElementById('app').innerHTML=`<div class="call-screen ${type==='video'?'video':'voice'}"><div class="panel" style="width:min(430px,92%);text-align:center;margin:auto"><div style="font-size:52px">${type==='video'?'📹':'🎙️'}</div><h2>Permissão necessária</h2><p class="muted">Para ${type==='video'?'fazer a chamada de vídeo, permita a câmera e o microfone.':'fazer a ligação, permita o microfone.'}</p><button class="primary" onclick="openCall('${escapeHtml(peerId)}','${escapeHtml(peerName)}','${escapeHtml(type)}','${escapeHtml(channelName)}',${isCaller})">Tentar novamente</button><button class="link" onclick="go('messages')">Voltar para mensagens</button></div></div>`;
+    return;
+  }
+
+  localStream.getTracks().forEach(t => pc.addTrack(t,localStream));
+
+  callChannel.on("broadcast",{event:"offer"},async({payload})=>{
+    if (payload.to!==account.id) return;
+    await pc.setRemoteDescription(payload.offer);
+    remoteDescriptionSet = true;
+    while (pendingIceCandidates.length) {
+      const candidate = pendingIceCandidates.shift();
+      try { await pc.addIceCandidate(candidate); } catch {}
+    }
+    const answer = await pc.createAnswer();
+    await pc.setLocalDescription(answer);
+    await callChannel.send({
+      type:"broadcast",
+      event:"answer",
+      payload:{to:payload.from,answer}
+    });
+  });
+
+  callChannel.on("broadcast",{event:"answer"},async({payload})=>{
+    if (payload.to!==account.id) return;
+    await pc.setRemoteDescription(payload.answer);
+    remoteDescriptionSet = true;
+    while (pendingIceCandidates.length) {
+      const candidate = pendingIceCandidates.shift();
+      try { await pc.addIceCandidate(candidate); } catch {}
+    }
+  });
+
+  callChannel.on("broadcast",{event:"ice"},async({payload})=>{
+    if (payload.from===account.id) return;
+    if (!remoteDescriptionSet) { pendingIceCandidates.push(payload.candidate); return; }
+    try { await pc.addIceCandidate(payload.candidate); } catch {}
+  });
+
+  // O receptor avisa que já está dentro do canal antes do chamador enviar o offer.
+  // Isso evita o problema em que a pessoa toca em “Atender”, mas volta para a tela inicial
+  // porque o offer foi enviado antes de ela terminar de assinar o canal.
+  let offerCreated = false;
+  const createAndSendOffer = async () => {
+    if (!isCaller || offerCreated || !pc || !callChannel) return;
+    offerCreated = true;
+    try {
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
+      await callChannel.send({
+        type:"broadcast",
+        event:"offer",
+        payload:{to:peerId,from:account.id,offer}
+      });
+    } catch (e) {
+      offerCreated = false;
+      toast("Não foi possível iniciar a ligação. Tente novamente.");
+    }
+  };
+
+  callChannel.on("broadcast",{event:"ready"},async({payload})=>{
+    if (!isCaller || !payload || payload.to!==account.id) return;
+    await createAndSendOffer();
+  });
+
+  callChannel.on("broadcast",{event:"hangup"},({payload})=>{
+    if (payload.from!==account.id) {
+      toast("A chamada terminou.");
+      endCall(false);
+    }
+  });
+
+  await callChannel.subscribe();
+
+  // Só depois de assinar o canal o receptor avisa o chamador que pode enviar o offer.
+  if (!isCaller) {
+    const sendReady = async () => {
+      try {
+        await callChannel.send({
+          type:"broadcast",
+          event:"ready",
+          payload:{to:peerId,from:account.id}
+        });
+      } catch {}
+    };
+    await sendReady();
+    // Reenvia o sinal de pronto por alguns segundos para evitar que o offer
+    // seja perdido caso o outro aparelho ainda esteja terminando de assinar o canal.
+    [400, 1000, 1800].forEach(ms => setTimeout(sendReady, ms));
+  }
+
+  const peerAvatar = (onlineUsers.get(normalizeUsername(peerName))?.avatar) || (findAccount(peerId)?.avatar) || makeAvatar(peerName);
+  document.getElementById("app").innerHTML = `
+    <div class="call-screen ${type==='video'?'video':'voice'}">
+      ${type==='video'?`<video id="remoteVideo" class="remote" autoplay playsinline></video>`:`<><audio id="remoteAudio" autoplay playsinline></audio><div class="voice-center"><img class="voice-avatar" src="${peerAvatar}"><div class="voice-name">${escapeHtml(peerName)}</div><div class="call-time" id="callStatus">Conectando ligação...</div></div></>`}
+      <div class="call-top"><div class="call-title"><img class="call-avatar" src="${peerAvatar}"><div><b>${escapeHtml(peerName)}</b><div style="font-size:12px;color:#cbd5e1">${type==='video'?'Chamada de vídeo':'Ligação'}</div></div></div><button class="profile-link" onclick="openCallPeerProfile('${escapeHtml(peerId)}','${escapeHtml(peerName)}')">Ver perfil</button></div>
+      ${type==='video'?`<video id="localVideo" class="local" autoplay muted playsinline></video>`:''}
+      <div class="controls">
+        <button id="speakerBtn" class="control" onclick="toggleSpeaker()">🔊</button>
+        ${type==='video'?`<button id="videoBtn" class="control videoOn" onclick="toggleCallVideo()">▣</button>`:''}
+        <button id="muteBtn" class="control" onclick="toggleCallMute()">🎙️</button>
+        <button class="control end" onclick="endCall(true)">☎</button>
+      </div>
+    </div>`;
+
+  const lv = document.getElementById("localVideo");
+  if (lv && localStream) lv.srcObject = localStream;
+  const ra = document.getElementById("remoteAudio");
+  if (ra) ra.volume = 1;
+  openingCall = false;
+
+  // O offer agora só é enviado depois do evento “ready” do receptor.
+  // Não enviar imediatamente aqui evita que o celular receptor perca o offer.
+}
+
+function toggleCallMute(){
+  if(!localStream) return;
+  const track=localStream.getAudioTracks()[0]; if(!track) return;
+  track.enabled=!track.enabled; const b=document.getElementById('muteBtn'); if(b){b.textContent=track.enabled?'🎙️':'🔇';b.classList.toggle('off',!track.enabled);}
+}
+function toggleCallVideo(){
+  if(!localStream) return;
+  const track=localStream.getVideoTracks()[0]; if(!track) return;
+  track.enabled=!track.enabled; const b=document.getElementById('videoBtn'); if(b){b.textContent=track.enabled?'▣':'🚫';b.classList.toggle('off',!track.enabled);}
+}
+function toggleSpeaker(){ toast('Áudio do alto-falante alternado.'); }
+function openCallPeerProfile(peerId,peerName){
+  const u=onlineUsers.get(normalizeUsername(peerName));
+  if(u) return viewOnlineProfile(u.username);
+  if(peerId) return viewProfile(peerId);
+}
+
+async function endCall(notify=true) {
+  if (notify && callChannel && account) {
+    try {
+      await callChannel.send({
+        type:"broadcast",
+        event:"hangup",
+        payload:{from:account.id}
+      });
+    } catch {}
+  }
+
+  if (localStream) {
+    localStream.getTracks().forEach(t=>t.stop());
+    localStream = null;
+  }
+
+  if (pc) {
+    try { pc.close(); } catch {}
+    pc = null;
+  }
+
+  if (callChannel && sb) {
+    try { await sb.removeChannel(callChannel); } catch {}
+  }
+
+  callChannel = null;
+
+  if (account && document.getElementById("app") && current !== "messages" && !openingCall) {
+    current = "messages";
+    render();
+  }
+}
+
+// Inicialização: por segurança do protótipo, SEMPRE mostra a tela de login.
+// A conta continua salva no aparelho, mas nome + senha são exigidos a cada abertura.
+(async function init() {
+  seedCommunity();
+  account = null;
+  localStorage.removeItem(CURRENT_KEY);
+  ensureAccountAvatars();
+  auth();
+})();
+</script>
+</body>
+</html>
